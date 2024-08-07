@@ -3,3 +3,6 @@ Repository for [OS from scratch](https://www.amazon.co.jp/%E3%82%BC%E3%83%AD%E3%
 
 ## 環境構築
 https://zenn.dev/sarisia/articles/6b57ea835344b6
+
+## ToDo
+- 2.2節で https://github.com/sarisia/mikanos-docker#m1-mac-%E3%81%A7%E3%81%AE%E5%8B%95%E4%BD%9C%E3%81%AF　を参照して環境構築を行う
