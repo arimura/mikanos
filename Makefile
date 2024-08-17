@@ -1,4 +1,5 @@
-install: repo/mikanos
+setup: repo/mikanos
+	xhost + 127.0.0.1
 
 repo/mikanos:
 	mkdir -p repo && \
