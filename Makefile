@@ -1,6 +1,5 @@
-setup: repo/mikanos
+setup: mikanos
 	xhost + 127.0.0.1
 
-repo/mikanos:
-	mkdir -p repo && \
-	  git clone git@github.com:uchan-nos/mikanos.git repo/mikanos
+mikanos:
+	git clone git@github.com:uchan-nos/mikanos.git mikanos
