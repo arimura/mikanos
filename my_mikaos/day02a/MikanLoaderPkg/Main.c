@@ -1,7 +1,7 @@
-#include <Uifi.h>
+#include  <Uefi.h>
 #include <Library/UefiLib.h>
 
-EFI_STATUS EFIAPI UsefiMain(
+EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,
     EFI_SYSTEM_TABLE *system_table) {
   Print(L"HEllo, Mikan World!\n");
