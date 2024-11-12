@@ -10,10 +10,16 @@ run-qemu:
 	  -hda disk.img
 
 EFI=
+run-qemu2:
+ifeq ($(EFI),)
+	$(error "EFI is not set")
+endif
+	/home/vscode/osbook/devenv/run_qemu.sh $(EFI)
+
 disk.img:
 ifeq ($(EFI),)
 	$(error "EFI is not set")
-endif	
+endif
 	qemu-img create -f raw disk.img 200M
 	mkfs.fat -n 'MIKAN OS' -s 2 -f 2 -R 32 -F 32 disk.img
 	mkdir -p mnt
