@@ -1,3 +1,5 @@
 /disk.img
 /repo
 /mikanos
+/main.o
+/kernel.elf
