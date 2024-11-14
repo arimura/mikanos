@@ -188,7 +188,7 @@ EFI_STATUS EFIAPI UefiMain(
   // #@@range_end(exit_bs)
 
   // #@@range_begin(call_kernel)
-  UINT64 endtry_addr = *(UINT64)(kernel_base_addr + 24);
+  UINT64 entry_addr = *(UINT64*)(kernel_base_addr + 24);
 
   typedef void EntryPointType(void);
   EntryPointType* entry_point = (EntryPointType*)entry_addr;
