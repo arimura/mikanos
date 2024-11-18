@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "uefi.h": "c"
+        "uefi.h": "c",
+        "diskio2.h": "c"
     }
 }
