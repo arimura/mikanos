@@ -2,6 +2,7 @@
 #include <Library/UefiLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/PrintLib.h>
+#include<Library/MemoryAllocationLib.h>
 #include <Protocol/LoadedImage.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/DiskIo2.h>
@@ -194,6 +195,25 @@ EFI_STATUS EFIAPI UefiMain(
 
   SaveMemoryMap(&memmap, memmap_file);
   memmap_file->Close(memmap_file);
+  
+  // #@@range_begin(gop)
+  EFI_GRAPHICS_OUTPUT_PROTOCOL* gop;
+  OpenGOP(image_handle, &gop);
+  Print(L"Resolution: %ux%u, Pixel Format: %s, %u pixels/line\n",
+    gop->Mode->Info->HorizontalResolution,
+    gop->Mode->Info->VerticalResolution,
+    GetPixelFormatUnicode(gop->Mode->Info->PixelFormat),
+    gop->Mode->Info->PixelsPerScanLine);
+  Print(L"Frame Buffer: 0x0lx - 0x0lx, Size: %lu bytes\n",
+    gop->Mode->FrameBufferBase,
+    gop->Mode->FrameBufferBase + gop->Mode->FrameBufferSize,
+    gop->Mode->FrameBufferSize);
+
+  UINT8* frame_buffer = (UINT8*)gop->Mode->FrameBufferBase;
+  for (UINTN i =0; i < gop->Mode->FrameBufferBase; ++i) {
+    frame_buffer[i] = 255;
+  }
+  // #@@range
 
   // #@@range_begin(read_kernel)
   EFI_FILE_PROTOCOL *kernel_file;
