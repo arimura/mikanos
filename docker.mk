@@ -9,7 +9,7 @@ run-qemu:
 	  -drive if=pflash,file=$(HOME)/osbook/devenv/OVMF_VARS.fd \
 	  -hda disk.img
 
-EFI=
+EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
 run-qemu2:
 ifeq ($(EFI),)
 	$(error "EFI is not set")
