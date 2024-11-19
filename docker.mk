@@ -33,11 +33,12 @@ update-tools_def:
        -e '/DEBUG_CLANG38_X64_CC_FLAGS/s/\(.*\)/\1 -I\/usr\/x86_64-linux-gnu\/include/' /home/vscode/edk2/Conf/tools_def.txt
 
 kernel.elf:
-	clang++ -O2 -Wall -g --target=x86_64-elf -ffreestanding -mno-red-zone \
-	  -fno-exceptions -fno-rtti -std=c++17 -c my_mikanos/kernel/main.cpp
-	ld.lld --entry KernelMain -z norelro --image-base 0x100000 --static \
+	. $(HOME)/osbook/devenv/buildenv.sh && \
+	  clang++ $$CPPFLAGS -O2 --target=x86_64-elf -fno-exceptions -ffreestanding -c my_mikanos/kernel/main.cpp &&\
+	  ld.lld $$LDFLAGS --entry KernelMain -z norelro --image-base 0x100000 --static \
 	  -o kernel.elf main.o
 
 clean:
+	rm -f kernel.elf
 	rm -f disk.img
 
