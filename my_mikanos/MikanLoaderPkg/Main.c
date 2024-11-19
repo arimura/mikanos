@@ -154,30 +154,6 @@ EFI_STATUS OpenGOP(EFI_HANDLE image_handle,
 
   return EFI_SUCCESS;
 }
-EFI_STATUS OpenGOP(EFI_HANDLE image_handle,
-                   EFI_GRAPHICS_OUTPUT_PROTOCOL** gop) {
-  UINTN num_gop_handles = 0;
-  EFI_HANDLE* gop_handles = NULL;
-  gBS->LocateHandleBuffer(
-      ByProtocol,
-      &gEfiGraphicsOutputProtocolGuid,
-      NULL,
-      &num_gop_handles,
-      &gop_handles);
-
-  gBS->OpenProtocol(
-      gop_handles[0],
-      &gEfiGraphicsOutputProtocolGuid,
-      (VOID**)gop,
-      image_handle,
-      NULL,
-      EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
-
-  FreePool(gop_handles);
-
-  return EFI_SUCCESS;
-}
-
 
 const CHAR16* GetPixelFormatUnicode(EFI_GRAPHICS_PIXEL_FORMAT fmt) {
   switch (fmt)
@@ -272,20 +248,24 @@ EFI_STATUS EFIAPI UefiMain(
       while (1)
         ;
     }
+    status = gBS->ExitBootServices(image_handle, memmap.map_key);
+    if (EFI_ERROR(status)) {
+      Print(L"Could not exit boot service: %r\n");
+      while(1);
+    }
   }
   // #@@range_end(exit_bs)
 
   // #@@range_begin(call_kernel)
   UINT64 entry_addr = *(UINT64 *)(kernel_base_addr + 24);
 
-  typedef void EntryPointType(void);
+  typedef void EntryPointType(UINT64, UINT64);
   EntryPointType *entry_point = (EntryPointType *)entry_addr;
-  entry_point();
+  entry_point(gop->Mode->FrameBufferBase, gop->Mode->FrameBufferSize);
   // #@@range_end(call_kernel)
 
   Print(L"All done\n");
 
-  while (1)
-    ;
+  while (1);
   return EFI_SUCCESS;
 }
