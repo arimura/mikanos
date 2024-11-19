@@ -1,5 +1,6 @@
 # makefile executed within docker container
-HOME=/home/vscode
+HOME:=/home/vscode
+SHELL:=/bin/bash
 
 all: disk.img run-qemu
 
@@ -8,6 +9,9 @@ run-qemu:
 	  -drive if=pflash,file=$(HOME)/osbook/devenv/OVMF_CODE.fd \
 	  -drive if=pflash,file=$(HOME)/osbook/devenv/OVMF_VARS.fd \
 	  -hda disk.img
+
+build:
+	cd $(HOME)/edk2 && . edksetup.sh && build 
 
 EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
 run-qemu2:
