@@ -173,15 +173,25 @@ const CHAR16* GetPixelFormatUnicode(EFI_GRAPHICS_PIXEL_FORMAT fmt) {
   }
 }
 
+// #@@range_begin(halt)
+void Halt(void) {
+  while (1) __asm__("hlt");
+}
+
 EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,
     EFI_SYSTEM_TABLE *system_table)
 {
+  EFI_STATUS status;
   Print(L"HEllo, Mikan World!\n");
 
   CHAR8 memmap_buf[4096 * 4];
   struct MemoryMap memmap = {sizeof(memmap_buf), memmap_buf, 0, 0, 0, 0};
-  GetMemoryMap(&memmap);
+  status = GetMemoryMap(&memmap);
+  if (EFI_ERROR(status)) {
+    Printf(L"failed to get memory map: %r\n", status);
+    Halt();
+  }
 
   EFI_FILE_PROTOCOL *root_dir;
   OpenRootDir(image_handle, &root_dir);
