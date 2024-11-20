@@ -19,7 +19,7 @@ run-qemu2: $(KERNEL)
 ifeq ($(EFI),)
 	$(error "EFI is not set")
 endif
-	/home/vscode/osbook/devenv/run_qemu.sh $(EFI)
+	/home/vscode/osbook/devenv/run_qemu.sh $(EFI) $(KERNEL)
 
 disk.img:
 ifeq ($(EFI),)
