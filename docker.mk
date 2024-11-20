@@ -1,20 +1,21 @@
 # makefile executed within docker container
 HOME:=/home/vscode
 SHELL:=/bin/bash
+KERNEL:=kernel.elf
 
 all: disk.img run-qemu
 
-run-qemu:
-	qemu-system-x86_64 \
-	  -drive if=pflash,file=$(HOME)/osbook/devenv/OVMF_CODE.fd \
-	  -drive if=pflash,file=$(HOME)/osbook/devenv/OVMF_VARS.fd \
-	  -hda disk.img
+$(KERNEL):
+	. $(HOME)/osbook/devenv/buildenv.sh && \
+	  clang++ $$CPPFLAGS -O2 --target=x86_64-elf -fno-exceptions -ffreestanding -c my_mikanos/kernel/main.cpp &&\
+	  ld.lld $$LDFLAGS --entry KernelMain -z norelro --image-base 0x100000 --static \
+	  -o $(KERNEL) main.o
 
 build:
 	cd $(HOME)/edk2 && . edksetup.sh && build 
 
 EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
-run-qemu2:
+run-qemu2: $(KERNEL)
 ifeq ($(EFI),)
 	$(error "EFI is not set")
 endif
@@ -36,13 +37,6 @@ update-tools_def:
 	sed -i -e '/DEFINE CLANG38_X64_TARGET/s/-target x86_64-pc-linux-gnu/-target x86_64-linux-gnu/' \
        -e '/DEBUG_CLANG38_X64_CC_FLAGS/s/\(.*\)/\1 -I\/usr\/x86_64-linux-gnu\/include/' /home/vscode/edk2/Conf/tools_def.txt
 
-kernel.elf:
-	. $(HOME)/osbook/devenv/buildenv.sh && \
-	  clang++ $$CPPFLAGS -O2 --target=x86_64-elf -fno-exceptions -ffreestanding -c my_mikanos/kernel/main.cpp &&\
-	  ld.lld $$LDFLAGS --entry KernelMain -z norelro --image-base 0x100000 --static \
-	  -o kernel.elf main.o
-
 clean:
 	rm -f kernel.elf
 	rm -f disk.img
-
