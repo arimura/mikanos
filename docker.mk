@@ -2,6 +2,7 @@
 HOME:=/home/vscode
 SHELL:=/bin/bash
 KERNEL:=kernel.elf
+OBJS:=main.o
 
 all: disk.img run-qemu
 
@@ -9,7 +10,7 @@ $(KERNEL):
 	. $(HOME)/osbook/devenv/buildenv.sh && \
 	  clang++ $$CPPFLAGS -O2 --target=x86_64-elf -fno-exceptions -ffreestanding -c my_mikanos/kernel/main.cpp &&\
 	  ld.lld $$LDFLAGS --entry KernelMain -z norelro --image-base 0x100000 --static \
-	  -o $(KERNEL) main.o
+	  -o $(KERNEL) OBJS 
 
 build:
 	cd $(HOME)/edk2 && . edksetup.sh && build 
