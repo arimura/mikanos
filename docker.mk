@@ -2,15 +2,12 @@
 HOME:=/home/vscode
 SHELL:=/bin/bash
 KERNEL:=kernel.elf
-OBJS:=main.o
+KERNEL_DIR:=my_mikanos/kernel
 
 all: disk.img run-qemu
 
-$(KERNEL):
-	. $(HOME)/osbook/devenv/buildenv.sh && \
-	  clang++ $$CPPFLAGS -O2 --target=x86_64-elf -fno-exceptions -ffreestanding -c my_mikanos/kernel/main.cpp &&\
-	  ld.lld $$LDFLAGS --entry KernelMain -z norelro --image-base 0x100000 --static \
-	  -o $(KERNEL) OBJS 
+$(KERNEL_DIR)/$(KERNEL):
+	$(MAKE) -C $(KERNEL_DIR) $(KERNEL) 
 
 build:
 	cd $(HOME)/edk2 && . edksetup.sh && build 
@@ -20,7 +17,7 @@ run-qemu: $(KERNEL)
 ifeq ($(EFI),)
 	$(error "EFI is not set")
 endif
-	/home/vscode/osbook/devenv/run_qemu.sh $(EFI) $(KERNEL)
+	/home/vscode/osbook/devenv/run_qemu.sh $(EFI) $(KERNEL_DIR)/$(KERNEL)
 
 disk.img:
 ifeq ($(EFI),)
@@ -39,5 +36,5 @@ update-tools_def:
        -e '/DEBUG_CLANG38_X64_CC_FLAGS/s/\(.*\)/\1 -I\/usr\/x86_64-linux-gnu\/include/' /home/vscode/edk2/Conf/tools_def.txt
 
 clean:
-	rm -f kernel.elf
+	rm -f $(KERNEL_DIR)/$(KERNEL)
 	rm -f disk.img
