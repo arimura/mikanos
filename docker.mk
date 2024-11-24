@@ -10,7 +10,7 @@ $(KERNEL_DIR)/$(KERNEL):
 	$(MAKE) -C $(KERNEL_DIR) $(KERNEL) 
 
 build:
-	cd $(HOME)/edk2 && . edksetup.sh && build 
+	cd $(HOME)/edk2 && build 
 
 EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
 run-qemu: $(KERNEL)
@@ -37,4 +37,5 @@ update-tools_def:
 
 clean:
 	rm -f $(KERNEL_DIR)/$(KERNEL)
+	rm -f $(KERNEL_DIR)/*.o
 	rm -f disk.img
