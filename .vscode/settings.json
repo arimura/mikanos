@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "uefi.h": "c",
-        "diskio2.h": "c"
+        "diskio2.h": "c",
+        "frame_buffer_config.hpp": "c"
     }
 }
