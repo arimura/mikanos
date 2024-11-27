@@ -299,7 +299,6 @@ EFI_STATUS EFIAPI UefiMain(
   // #@@range_end(read_kernel)
 
   // #@@range_begin(exit_bs)
-  EFI_STATUS status;
   status = gBS->ExitBootServices(image_handle, memmap.map_key);
   if (EFI_ERROR(status))
   {
