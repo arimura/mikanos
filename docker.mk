@@ -13,7 +13,7 @@ build:
 	cd $(HOME)/edk2 && build 
 
 EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
-run-qemu: $(KERNEL)
+run-qemu: $(KERNEL_DIR)/$(KERNEL)
 ifeq ($(EFI),)
 	$(error "EFI is not set")
 endif
