@@ -8,6 +8,23 @@ struct PixelColor {
     uint8_t r, g ,b;
 };
 
+// #@@range_begin(pixel_writer)
+class PixelWriter {
+    public:
+        PixelWriter(const FrameBufferConfig& config) : config_{config}{
+        }        
+        virtual ~PixelWriter() = default;
+        virtual void Write(int x, int y, const PixelColor& c) = 0;
+
+        protected:
+            uint8_t* PixelAt(int x, int y) {
+                return config_.frame_buffer + 4 * (config_.pixels_per_scan_line *y + x);
+            }
+        private:
+            const FrameBufferConfig& config_;
+};
+// #@@range_end(pixel_writer)
+
 int WritePixel(const FrameBufferConfig& config,
                int x, int y, const PixelColor& c){
     const int pixel_position = config.pixels_per_scan_line * y + x;
