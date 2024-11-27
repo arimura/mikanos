@@ -16,7 +16,7 @@ int WritePixel(const FrameBufferConfig& config,
         p[0] = c.r;
         p[1] = c.g;
         p[2] = c.b;
-    } else if (config.pixel_format == kPixelRGBResv8BitPerColor) {
+    } else if (config.pixel_format == kPixelBGRResv8BitPerColor) {
         uint8_t* p = &config.frame_buffer[4 * pixel_position];
         p[0] = c.b;
         p[1] = c.g;
