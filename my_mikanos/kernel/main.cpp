@@ -30,6 +30,47 @@ private:
 };
 // #@@range_end(pixel_writer)
 
+// #@@range_begin(derived_pixel_writer)
+class RGBResv8bitPerColorPixelWriter : public PixelWriter
+{
+public:
+    using PixelWriter::PixelWriter;
+
+    virtual void Write(int x, int y, const PixelColor &c) override
+    {
+        auto p = PixelAt(x, y);
+        p[0] = c.r;
+        p[1] = c.g;
+        p[2] = c.b;
+    }
+};
+
+class BGRResv8bitPerColorPixelWriter : public PixelWriter
+{
+public:
+    using PixelWriter::PixelWriter;
+
+    virtual void Write(int x, int y, const PixelColor &c) override
+    {
+        auto p = PixelAt(x, y);
+        p[0] = c.b;
+        p[1] = c.g;
+        p[2] = c.r;
+    }
+};
+// #@@range_end(derived_pixel_writer)
+
+// #@@range_begin(placement_new)
+void *operator new(size_t size, void *buf)
+{
+    return buf;
+}
+
+void operator delete(void *obj) noexcept
+{
+}
+// #@@range_end(placement_new)
+
 int WritePixel(const FrameBufferConfig &config,
                int x, int y, const PixelColor &c)
 {
