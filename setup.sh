@@ -11,5 +11,8 @@ echo "Setup EDK2 environment"
 cd $HOME/osbook/devenv && source buildenv.sh 
 echo "Setup kernel build environment"
 
+# shell vi keybind
+set -o vi
+
 # back to original directory
 cd $ORIGINAL_DIR
