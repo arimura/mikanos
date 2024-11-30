@@ -3,12 +3,14 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/PrintLib.h>
 #include <Library/MemoryAllocationLib.h>
+#include <Library/BaseMemoryLib.h>
 #include <Protocol/LoadedImage.h>
 #include <Protocol/SimpleFileSystem.h>
 #include <Protocol/DiskIo2.h>
 #include <Protocol/BlockIo.h>
 #include <Guid/FileInfo.h>
 #include "frame_buffer_config.hpp"
+#include "elf.hpp"
 
 struct MemoryMap
 {
@@ -182,6 +184,19 @@ void Halt(void)
   while (1)
     __asm__("hlt");
 }
+
+// #@@range_begin(clac_addr_func)
+void CalcLoadAddressRange(ELF64_Ehdr* ehdr, UINT64* first, UINT64* last) {
+  Elf64_Phdr* phdr = (Elf64_Phdr*)((UINT64)ehdr + ehdr->e_phoff);
+  *first = MAX_UINT64;
+  *last = 0;
+  for(Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+    if(phdr[i].p_type != PT_LOAD) continue;
+    *first = MIN(*first, phdr[i].p_vaddr);
+    *last = MAX(*last, phdr[i].p_vaddr + phdr[i].p_memsz);
+  }
+}
+// #@@range_end(calc_addr_func)
 
 EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,
