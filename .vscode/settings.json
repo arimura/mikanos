@@ -2,6 +2,7 @@
     "files.associations": {
         "uefi.h": "c",
         "diskio2.h": "c",
-        "frame_buffer_config.hpp": "c"
+        "frame_buffer_config.hpp": "c",
+        "memoryallocationlib.h": "c"
     }
 }
