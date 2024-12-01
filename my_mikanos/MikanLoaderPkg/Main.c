@@ -186,7 +186,7 @@ void Halt(void)
 }
 
 // #@@range_begin(clac_addr_func)
-void CalcLoadAddressRange(ELF64_Ehdr* ehdr, UINT64* first, UINT64* last) {
+void CalcLoadAddressRange(Elf64_Ehdr* ehdr, UINT64* first, UINT64* last) {
   Elf64_Phdr* phdr = (Elf64_Phdr*)((UINT64)ehdr + ehdr->e_phoff);
   *first = MAX_UINT64;
   *last = 0;
@@ -197,6 +197,20 @@ void CalcLoadAddressRange(ELF64_Ehdr* ehdr, UINT64* first, UINT64* last) {
   }
 }
 // #@@range_end(calc_addr_func)
+
+// #@@range_begin(copy_sem_func)
+void CopyLoadSegments(Elf64_Ehdr* ehdr) {
+  Elf64_Phdr* phdr = (Elf64_Phdr*)((UINT64)ehdr + ehdr->e_phoff);
+  for(Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
+    if (phdr[i].p_type != PT_LOAD) continue;
+
+    UINT64 segm_in_file = (UINT64)ehdr + phdr[i].p_offset;
+    CopyMem((VOID*)phdr[i].p_vaddr, (VOID*)segm_in_file, phdr[i].p_filsesz);
+
+    UINTN remain_bytes = phdr[i].p_memsz - phdr[i].p_filsesz;
+    SetMem((VOID*)(phdr[i].p_vaddr + phdr[i].p_filsesz), remain_bytes, 0);
+  }
+}
 
 EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,

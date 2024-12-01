@@ -3,6 +3,7 @@
         "uefi.h": "c",
         "diskio2.h": "c",
         "frame_buffer_config.hpp": "c",
-        "memoryallocationlib.h": "c"
+        "memoryallocationlib.h": "c",
+        "elf.hpp": "c"
     }
 }

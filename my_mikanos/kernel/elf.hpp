@@ -27,7 +27,7 @@ typedef struct {
     Elf64_Half e_shentsize;
     Elf64_Half e_shnum;
     Elf64_Half e_shstrndx;
-} ELF64_Ehdr;
+} Elf64_Ehdr;
 
 typedef struct {
     Elf64_Word p_type;
