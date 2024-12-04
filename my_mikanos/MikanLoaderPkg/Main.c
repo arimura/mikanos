@@ -309,7 +309,34 @@ EFI_STATUS EFIAPI UefiMain(
   // #@@range_begin(read_kernel)
   EFI_FILE_INFO *file_info = (EFI_FILE_INFO *)file_info_buffer;
   UINTN kernel_file_size = file_info->FileSize;
+  
+  VOID* kernel_buffer;
+  status = gBS->AllocatePool(EfiLoaderData, kernel_file_size, &kernel_buffer);
+  if (EFI_ERROR(status)){
+    Print(L"failed to allocate pool: %r\n", status);
+    Halt();
+  }
+  status = kernel_file->Read(kernel_file, &kernel_file_size, kernel_buffer);
+  if (EFI_ERROR(status)) {
+    Print(L"error: %r", status);
+    Halt();
+  }
+  // #@@range_end(read_kernel)
 
+  // #@@range_begin(alloc_pages)
+  Elf64_Ehdr* kernel_ehdr = (Elf64_Ehdr*)kernel_buffer;
+  UINT64 kernel_first_addr, kernel_last_addr;
+  CalcLoadAddressRange(kernel_ehdr, &kernel_first_addr, &kernel_last_addr);
+
+  UINTN num_pages = (kernel_last_addr - kernel_first_addr + 0xfff) / 0x1000;
+  status = gBS->AllocatePages(AllocateAddress, EfiLoaderData, num_pages, &kernel_first_addr);
+  if(EFI_ERROR(status)) {
+    Print(L"failed to allocate pages: %r\n", status);
+    Halt();
+  }
+  // #@@range_end(alloc_pages)
+
+  //TODO: to be deleted?
   EFI_PHYSICAL_ADDRESS kernel_base_addr = 0x100000;
   status = gBS->AllocatePages(
       AllocateAddress, EfiLoaderData,
