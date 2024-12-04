@@ -211,6 +211,7 @@ void CopyLoadSegments(Elf64_Ehdr* ehdr) {
     SetMem((VOID*)(phdr[i].p_vaddr + phdr[i].p_filsesz), remain_bytes, 0);
   }
 }
+// #@@range_end(copy_segm_func)
 
 EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,
