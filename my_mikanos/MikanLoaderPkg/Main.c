@@ -336,25 +336,16 @@ EFI_STATUS EFIAPI UefiMain(
   }
   // #@@range_end(alloc_pages)
 
-  //TODO: to be deleted?
-  EFI_PHYSICAL_ADDRESS kernel_base_addr = 0x100000;
-  status = gBS->AllocatePages(
-      AllocateAddress, EfiLoaderData,
-      (kernel_file_size + 0xfff) / 0x1000, &kernel_base_addr);
-  if (EFI_ERROR(status))
-  {
-    Print(L"failed to allocate pages: %r", status);
-  }
+  // #@@range_begin(copy_segments)
+  CopyLoadSegments(kernel_ehdr);
+  Print(L"Kernel: 0x%0l - 0x%0lx\n", kernel_first_addr, kernel_last_addr);
 
-  status = kernel_file->Read(kernel_file, &kernel_file_size, (VOID *)kernel_base_addr);
-  if (EFI_ERROR(status))
-  {
-    Print(L"error: %r", status);
+  status = gBS->FreePool(kernel_buffer);
+  if(EFI_ERROR(status)) {
+    Print(L"failed to free pool: %r\n", status);
   }
-  Print(L"Kernel: 0x%0lx (%lu bytes)\n", kernel_base_addr, kernel_file_size);
-  // #@@range_end(read_kernel)
+  // #@@range_end(copy_segments)
 
-  // #@@range_begin(exit_bs)
   status = gBS->ExitBootServices(image_handle, memmap.map_key);
   if (EFI_ERROR(status))
   {
@@ -371,12 +362,11 @@ EFI_STATUS EFIAPI UefiMain(
       Halt();
     }
   }
-  // #@@range_end(exit_bs)
 
-  // #@@range_begin(call_kernel)
-  UINT64 entry_addr = *(UINT64 *)(kernel_base_addr + 24);
+  // #@@range_begin(get_entry_pont)
+  UINT64 entry_addr = *(UINT64 *)(kernel_first_addr + 24);
+  // #@@range_end(get_entry_pont)
 
-  // #@@range_begin(pass_frame_buffer_config)
   struct FrameBufferConfig config = {
     (UINT8*)gop->Mode->FrameBufferBase,
     gop->Mode->Info->PixelsPerScanLine,
@@ -399,7 +389,6 @@ EFI_STATUS EFIAPI UefiMain(
   typedef void EntryPointType(const struct FrameBufferConfig*);
   EntryPointType *entry_point = (EntryPointType *)entry_addr;
   entry_point(&config);
-  // #@@range_end(pass_frame_buffer_config)
 
   Print(L"All done\n");
 
