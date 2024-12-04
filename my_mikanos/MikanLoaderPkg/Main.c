@@ -284,9 +284,7 @@ EFI_STATUS EFIAPI UefiMain(
   {
     frame_buffer[i] = 255;
   }
-  // #@@range_end(gop)
 
-  // #@@range_begin(read_kernel)
   EFI_FILE_PROTOCOL *kernel_file;
   status = root_dir->Open(
       root_dir, &kernel_file, L"\\kernel.elf",
@@ -308,6 +306,7 @@ EFI_STATUS EFIAPI UefiMain(
     Halt();
   }
 
+  // #@@range_begin(read_kernel)
   EFI_FILE_INFO *file_info = (EFI_FILE_INFO *)file_info_buffer;
   UINTN kernel_file_size = file_info->FileSize;
 
