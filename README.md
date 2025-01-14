@@ -9,6 +9,10 @@ Repository for the book [ゼロからのOS自作入門 (Creating an OS from Scra
 - For M1 Mac, refer to [this guide](https://github.com/sarisia/mikanos-docker#m1-mac-での動作は) to set up the environment
 
 ## Getting Started
+- Run the following commands in host machine
+```bash
+$ make setup
+```
 - Open this repository in a VSCode DevContainer
 - Run the following commands in the terminal
 ```bash
