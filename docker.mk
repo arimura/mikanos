@@ -4,7 +4,7 @@ SHELL:=/bin/bash
 KERNEL:=kernel.elf
 KERNEL_DIR:=my_mikanos/kernel
 
-all: disk.img run-qemu
+all: clean my_mikanos/kernel/kernel.elf build run-qemu
 
 $(KERNEL_DIR)/$(KERNEL):
 	$(MAKE) -C $(KERNEL_DIR) $(KERNEL) 
