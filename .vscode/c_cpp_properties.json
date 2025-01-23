@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "/home/vscode/edk2/MdePkg/Include",
-                "/home/vscode/edk2/MdePkg/Include/**"
+                "/home/vscode/edk2/MdePkg/Include/**",
+                "/home/vscode/osbook/devenv/x86_64-elf/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
