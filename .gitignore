@@ -3,3 +3,4 @@
 /mikanos
 **/*.o
 **/kernel.elf
+hankaku.bin
