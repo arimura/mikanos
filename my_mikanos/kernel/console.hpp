@@ -1,6 +1,6 @@
 #pragma once
 
-#include 'graphics.hpp'
+#include "graphics.hpp"
 
 class Console {
     public:
@@ -8,7 +8,7 @@ class Console {
 
         Console(PixelWriter& writer,
             const PixelColor& fg_color, const PixelColor& bg_color);
-        void PutString(const chat* s);
+        void PutString(const char* s);
 
         private:
             void NewLine();
