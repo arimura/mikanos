@@ -40,11 +40,12 @@ extern "C" void KernelMain(const FrameBufferConfig &frame_buffer_config)
         }
     }
 
-    Console consle{*pixel_writer, {0,0,0}, {255,255,255}};
+    Console console{*pixel_writer, {0,0,0}, {255,255,255}};
     char buf[128];
 
     for (int i = 0; i < 27; ++i){
         sprintf(buf, "line %d\n", i);
+        console.PutString(buf);
     }
     while (1)
         __asm__("hlt");
