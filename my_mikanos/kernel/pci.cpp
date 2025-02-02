@@ -95,5 +95,46 @@ namespace pci {
         return IoInt32(kConfigData);
     }
 
-    
+    uint16_t ReadVendorId(uint8_t bus, uint8_t device, uint8_t function) {
+        WriteAddress(MakeAddress(bus, device, function, 0x00));
+        return ReadData() & 0xffffu;
+    }
+
+    uint8_t ReadHeaderType(uint8_t bus, uint8_t device, uint8_t function0 {
+        WriteAddress(MakeAddress(bus, device, function, 0x0c0);
+        return (ReadData() >> 16) & 0xffu;
+    }
+
+    uint32_t ReadClassCode(uint8_t bus, uint8_t device, uint8_t function) {
+        WriteAddress(MakeAddress(bus, device, function, 0x080);
+        return ReadData();
+    }
+
+    uint32_t ReadBusNumbers(uint8_t bus, uint8_t device, uint8_t function) {
+        WriteAddress(MakeAddress(bus, device, function, 0x18));
+        return ReadData();
+    }
+
+    bool IsSingleFunctionDevice(uint8_t header_type) {
+        return (header_type & 0x80u) == 0;
+    }
+
+    Error ScanAllBus() {
+        num_device = 0;
+
+        auto header_type = ReadHeaderType(0, 0, 0);
+        if(IsSingleFunctionDevice(header_type)) {
+            return ScanBus(0);
+        }
+
+        for(uint8_t function = 1; function < 8; ++ function) {
+            if (ReadVendorId(0, 0, function) == 0xffffu) {
+                continue;
+            }
+            if (auto err = ScanBus(function)) {
+                return err;
+            }
+        }
+        return Error::kSuccess;
+    }
 }
