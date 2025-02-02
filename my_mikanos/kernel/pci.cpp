@@ -49,5 +49,51 @@ namespace {
 
         return Error::kSuccess;
     }
+
+    Error ScanDevice(uint8_t bus, uint8_t device) {
+        if (auto err = ScanFunction(bus, device, 0)) {
+            return err;
+        }
+        if(IsSingleFunctionDevice(ReadHeaderType(bus, device, 0))){
+            return Error::kSuccess;
+        }
+
+        for(uint8_t function = 1; function < 8; ++function) {
+            if(ReadHeaderId(bus, device, function) == 0xffffu) {
+                continue;
+            }
+            if (auto err = ScanFunction(bus, device, function)) {
+                return err;
+            }
+        }
+        return Error::kSuccess;
+    }    
+
+    Error ScanBus(uint8_t bus) {
+        for(uint8_t device = 0; device < 32; ++device) {
+            if (ReadVendorId(bus, device, 0) == 0xffffu) {
+                continue;
+            }
+            if(auto err = ScanDevice(bus, device)) {
+                return err;
+            }
+        }
+        return Error::kSuccess;
+    }
+}
+
+namespace pci {
+    void WriteAddress(uint32_t address) {
+        IoOut32(kConfigAddres, address);
+    }
+
+    void WriteData(uint32_t value) {
+        IoOut32(kConfigData, value);
+    }
+
+    uint32_t ReadData() {
+        return IoInt32(kConfigData);
+    }
+
     
-};
+}
