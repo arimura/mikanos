@@ -15,7 +15,7 @@ namespace pci {
     uint8_t ReadHeaderType(uint8_t bus, uint8_t device, uint8_t function);
     uint32_t ReadClassCode(uint8_t bus, uint8_t device, uint8_t function);
     uint32_t ReadBusNumbers(uint8_t bus, uint8_t device, uint8_t function);
-    bool IsSingleFuncionDevice(uint8_t header_type);
+    bool IsSingleFunctionDevice(uint8_t header_type);
     struct Device {
         uint8_t bus, device, function, header_type;
     };

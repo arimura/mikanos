@@ -8,7 +8,7 @@ IoOut32:
     out dx, eax
     ret
 
-global IoInt32
+global IoIn32
 IoIn32:
     mov dx, di
     in eax, dx

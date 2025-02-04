@@ -7,7 +7,7 @@ namespace {
 
     uint32_t MakeAddress(uint8_t bus, uint8_t device,
                          uint8_t function, uint8_t reg_addr) {
-        auto shl = [](uint32_t x, usinged int bits) {
+        auto shl = [](uint32_t x, unsigned int bits) {
             return x << bits;
         };
 
@@ -20,7 +20,7 @@ namespace {
 
     Error AddDevice(uint8_t bus, uint8_t device,
                     uint8_t function, uint8_t header_type) {
-        if(num_device ==device.size()){
+        if(num_device ==devices.size()){
             return Error::kFull;
         }
 
@@ -59,7 +59,7 @@ namespace {
         }
 
         for(uint8_t function = 1; function < 8; ++function) {
-            if(ReadHeaderId(bus, device, function) == 0xffffu) {
+            if(ReadVendorId(bus, device, function) == 0xffffu) {
                 continue;
             }
             if (auto err = ScanFunction(bus, device, function)) {
@@ -84,7 +84,7 @@ namespace {
 
 namespace pci {
     void WriteAddress(uint32_t address) {
-        IoOut32(kConfigAddres, address);
+        IoOut32(kConfigAddress, address);
     }
 
     void WriteData(uint32_t value) {
@@ -92,7 +92,7 @@ namespace pci {
     }
 
     uint32_t ReadData() {
-        return IoInt32(kConfigData);
+        return IoIn32(kConfigData);
     }
 
     uint16_t ReadVendorId(uint8_t bus, uint8_t device, uint8_t function) {
@@ -100,13 +100,13 @@ namespace pci {
         return ReadData() & 0xffffu;
     }
 
-    uint8_t ReadHeaderType(uint8_t bus, uint8_t device, uint8_t function0 {
-        WriteAddress(MakeAddress(bus, device, function, 0x0c0);
+    uint8_t ReadHeaderType(uint8_t bus, uint8_t device, uint8_t function) {
+        WriteAddress(MakeAddress(bus, device, function, 0x0c0));
         return (ReadData() >> 16) & 0xffu;
     }
 
     uint32_t ReadClassCode(uint8_t bus, uint8_t device, uint8_t function) {
-        WriteAddress(MakeAddress(bus, device, function, 0x080);
+        WriteAddress(MakeAddress(bus, device, function, 0x080));
         return ReadData();
     }
 
