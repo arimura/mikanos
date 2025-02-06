@@ -4,6 +4,7 @@
         "diskio2.h": "c",
         "frame_buffer_config.hpp": "c",
         "memoryallocationlib.h": "c",
-        "elf.hpp": "c"
+        "elf.hpp": "c",
+        "array": "cpp"
     }
 }

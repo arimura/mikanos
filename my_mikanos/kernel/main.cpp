@@ -122,6 +122,13 @@ extern "C" void KernelMain(const FrameBufferConfig &frame_buffer_config)
             dev.bus, dev.device, dev.function,
             vendor_id, class_code, dev.header_type);
     }
+
+    pci::Device* xhc_dev = nullptr;
+    for(int i = 0; i < pci::num_device; ++i) {
+        // if(pci::devices[i].class_code.Match(0x0cu, 0x03u, 0x30u)) {
+
+        // }
+    }
     
     while (1)
         __asm__("hlt");
