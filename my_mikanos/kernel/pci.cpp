@@ -25,7 +25,7 @@ namespace {
         }
 
         devices[num_device] = Device{bus, device, function, header_type};
-        ++device;
+        ++num_device;
         return Error::kSuccess;
     }
 
@@ -100,13 +100,18 @@ namespace pci {
         return ReadData() & 0xffffu;
     }
 
+    uint16_t ReadDeviceId(uint8_t bus, uint8_t device, uint8_t function) {
+        WriteAddress(MakeAddress(bus, device, function, 0x00));
+        return ReadData() >> 16;
+    }
+
     uint8_t ReadHeaderType(uint8_t bus, uint8_t device, uint8_t function) {
-        WriteAddress(MakeAddress(bus, device, function, 0x0c0));
+        WriteAddress(MakeAddress(bus, device, function, 0x0c));
         return (ReadData() >> 16) & 0xffu;
     }
 
     uint32_t ReadClassCode(uint8_t bus, uint8_t device, uint8_t function) {
-        WriteAddress(MakeAddress(bus, device, function, 0x080));
+        WriteAddress(MakeAddress(bus, device, function, 0x08));
         return ReadData();
     }
 
