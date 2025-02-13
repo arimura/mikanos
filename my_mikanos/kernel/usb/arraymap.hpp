@@ -20,7 +20,7 @@ namespace usb {
                 for(int i = 0; i < table_.size(); ++i) {
                     if(!table_[i].first) {
                         table_[i].first = key;
-                        table_[i].seconde = value;
+                        table_[i].second = value;
                         break;
                     }
                 }
