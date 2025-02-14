@@ -6,7 +6,7 @@
 #include "console.hpp"
 
 namespace {
-    Loglevel log_level = kWarn;
+    LogLevel log_level = kWarn;
 }
 
 extern Console* console;
@@ -15,7 +15,7 @@ void SetLogLevel(LogLevel level) {
     log_level = level;
 }
 
-int Log(LogLevel leve, const char* format, ...) {
+int Log(LogLevel level, const char* format, ...) {
     if(level > log_level) {
         return 0;
     }
