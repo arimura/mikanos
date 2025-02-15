@@ -6,5 +6,6 @@
         "memoryallocationlib.h": "c",
         "elf.hpp": "c",
         "array": "cpp"
-    }
+    },
+    "editor.formatOnSave": true
 }
