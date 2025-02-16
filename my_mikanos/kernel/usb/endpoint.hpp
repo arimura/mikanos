@@ -10,11 +10,11 @@ namespace usb {
   };
 
   class EndpointID {
-public:
+   public:
     constexpr EndpointID()
         : addr_ { 0 } { }
 
-private:
+   private:
     int addr_;
   };
 }
