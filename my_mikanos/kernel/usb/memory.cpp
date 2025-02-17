@@ -1,4 +1,5 @@
 #include "usb/memory.hpp"
+
 #include <cstdint>
 
 namespace {
@@ -28,7 +29,8 @@ namespace usb {
       }
     }
 
-    if (reinterpret_cast<uintptr_t>(memory_pool) + kMemoryPoolSize < alloc_ptr + size) {
+    if (reinterpret_cast<uintptr_t>(memory_pool) + kMemoryPoolSize
+        < alloc_ptr + size) {
       return nullptr;
     }
 
@@ -37,5 +39,5 @@ namespace usb {
     return reinterpret_cast<void*>(p);
   }
 
-  void FeeMem(void* p) { }
+  void FreeMem(void* p) {}
 }
