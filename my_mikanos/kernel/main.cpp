@@ -211,7 +211,7 @@ extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config) {
     __asm__("hlt");
 }
 
-extern "C" void _cxa_pure_virtual() {
+extern "C" void __cxa_pure_virtual() {
   while (1)
     __asm__("hlt");
 }
