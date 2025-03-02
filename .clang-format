@@ -3,3 +3,4 @@ NamespaceIndentation: All
 BreakBeforeBraces: Attach
 IndentWidth: 2
 AccessModifierOffset: -1
+IndentExternBlock: Indent
