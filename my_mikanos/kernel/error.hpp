@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdio>
 #include <array>
+#include <cstdio>
 
 class Error {
  public:
@@ -26,11 +26,12 @@ class Error {
     kInvalidPhase,
     kUnknownXHCISpeedID,
     kNoWaiter,
-    kLastOfCode,  // この列挙子は常に最後に配置する
+    kNoPCIMSI,
+    kLastOfCode, // この列挙子は常に最後に配置する
   };
 
  private:
-  static constexpr std::array code_names_{
+  static constexpr std::array code_names_ {
     "kSuccess",
     "kFull",
     "kEmpty",
@@ -51,11 +52,15 @@ class Error {
     "kInvalidPhase",
     "kUnknownXHCISpeedID",
     "kNoWaiter",
+    "kNoPCIMSI",
   };
   static_assert(Error::Code::kLastOfCode == code_names_.size());
 
  public:
-  Error(Code code, const char* file, int line) : code_{code}, line_{line}, file_{file} {}
+  Error(Code code, const char* file, int line)
+      : code_ { code }
+      , line_ { line }
+      , file_ { file } { }
 
   Code Cause() const {
     return this->code_;
