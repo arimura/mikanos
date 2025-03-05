@@ -1,9 +1,9 @@
 #include "usb/xhci/xhci.hpp"
 
 #include "logger.hpp"
-#include "usb/setupdata.hpp"
-#include "usb/device.hpp"
 #include "usb/descriptor.hpp"
+#include "usb/device.hpp"
+#include "usb/setupdata.hpp"
 #include "usb/xhci/speed.hpp"
 
 namespace {
@@ -35,12 +35,12 @@ namespace {
    * （kAddressingDevice）までの一連の処理の実行を待っている状態．
    */
 
-  std::array<volatile ConfigPhase, 256> port_config_phase{};  // index: port number
+  std::array<volatile ConfigPhase, 256> port_config_phase {}; // index: port number
 
   /** kResettingPort から kAddressingDevice までの処理を実行中のポート番号．
    * 0 ならその状態のポートがないことを示す．
    */
-  uint8_t addressing_port{0};
+  uint8_t addressing_port { 0 };
 
   void InitializeSlotContext(SlotContext& ctx, Port& port) {
     ctx.bits.route_string = 0;
@@ -52,11 +52,11 @@ namespace {
   unsigned int DetermineMaxPacketSizeForControlPipe(unsigned int slot_speed) {
     switch (slot_speed) {
     case 4: // Super Speed
-        return 512;
+      return 512;
     case 3: // High Speed
-        return 64;
+      return 64;
     default:
-        return 8;
+      return 8;
     }
   }
 
@@ -66,14 +66,14 @@ namespace {
     }
 
     int msb_index;
-    asm("bsr %1, %0"
+    __asm__("bsr %1, %0"
         : "=r"(msb_index) : "m"(value));
     return msb_index;
   }
 
   void InitializeEP0Context(EndpointContext& ctx,
-                            Ring* transfer_ring,
-                            unsigned int max_packet_size) {
+      Ring* transfer_ring,
+      unsigned int max_packet_size) {
     ctx.bits.ep_type = 4; // Control Endpoint. Bidirectional.
     ctx.bits.max_packet_size = max_packet_size;
     ctx.bits.max_burst_size = 0;
@@ -98,8 +98,7 @@ namespace {
       port_config_phase[port.Number()] = ConfigPhase::kWaitingAddressed;
     } else {
       const auto port_phase = port_config_phase[port.Number()];
-      if (port_phase != ConfigPhase::kNotConnected &&
-          port_phase != ConfigPhase::kWaitingAddressed) {
+      if (port_phase != ConfigPhase::kNotConnected && port_phase != ConfigPhase::kWaitingAddressed) {
         return MAKE_ERROR(Error::kInvalidPhase);
       }
       addressing_port = port.Number();
@@ -121,7 +120,7 @@ namespace {
 
       port_config_phase[port.Number()] = ConfigPhase::kEnablingSlot;
 
-      EnableSlotCommandTRB cmd{};
+      EnableSlotCommandTRB cmd {};
       xhc.CommandRing()->Push(cmd);
       xhc.DoorbellRegisterAt(0)->Ring(0);
     }
@@ -139,7 +138,7 @@ namespace {
     }
 
     memset(&dev->InputContext()->input_control_context, 0,
-           sizeof(InputControlContext));
+        sizeof(InputControlContext));
 
     const auto ep0_dci = DeviceContextIndex(0, false);
     auto slot_ctx = dev->InputContext()->EnableSlotContext();
@@ -156,7 +155,7 @@ namespace {
 
     port_config_phase[port_id] = ConfigPhase::kAddressingDevice;
 
-    AddressDeviceCommandTRB addr_dev_cmd{dev->InputContext(), slot_id};
+    AddressDeviceCommandTRB addr_dev_cmd { dev->InputContext(), slot_id };
     xhc.CommandRing()->Push(addr_dev_cmd);
     xhc.DoorbellRegisterAt(0)->Ring(0);
 
@@ -217,8 +216,7 @@ namespace {
     }
 
     const auto port_id = dev->DeviceContext()->slot_context.bits.root_hub_port_num;
-    if (dev->IsInitialized() &&
-        port_config_phase[port_id] == ConfigPhase::kInitializingDevice) {
+    if (dev->IsInitialized() && port_config_phase[port_id] == ConfigPhase::kInitializingDevice) {
       return ConfigureEndpoints(xhc, *dev);
     }
     return MAKE_ERROR(Error::kSuccess);
@@ -281,7 +279,7 @@ namespace {
   }
 
   void RequestHCOwnership(uintptr_t mmio_base, HCCPARAMS1_Bitmap hccp) {
-    ExtendedRegisterList extregs{ mmio_base, hccp };
+    ExtendedRegisterList extregs { mmio_base, hccp };
 
     auto ext_usblegsup = std::find_if(
         extregs.begin(), extregs.end(),
@@ -291,8 +289,7 @@ namespace {
       return;
     }
 
-    auto& reg =
-      reinterpret_cast<MemMapRegister<USBLEGSUP_Bitmap>&>(*ext_usblegsup);
+    auto& reg = reinterpret_cast<MemMapRegister<USBLEGSUP_Bitmap>&>(*ext_usblegsup);
     auto r = reg.Read();
     if (r.bits.hc_os_owned_semaphore) {
       return;
@@ -304,8 +301,7 @@ namespace {
 
     do {
       r = reg.Read();
-    } while (r.bits.hc_bios_owned_semaphore ||
-             !r.bits.hc_os_owned_semaphore);
+    } while (r.bits.hc_bios_owned_semaphore || !r.bits.hc_os_owned_semaphore);
     Log(kDebug, "OS has owned xHC\n");
   }
 }
@@ -313,12 +309,12 @@ namespace {
 namespace usb::xhci {
 
   Controller::Controller(uintptr_t mmio_base)
-      : mmio_base_{mmio_base},
-        cap_{reinterpret_cast<CapabilityRegisters*>(mmio_base)},
-        op_{reinterpret_cast<OperationalRegisters*>(
-            mmio_base + cap_->CAPLENGTH.Read())},
-        max_ports_{static_cast<uint8_t>(
-            cap_->HCSPARAMS1.Read().bits.max_ports)} {
+      : mmio_base_ { mmio_base }
+      , cap_ { reinterpret_cast<CapabilityRegisters*>(mmio_base) }
+      , op_ { reinterpret_cast<OperationalRegisters*>(
+            mmio_base + cap_->CAPLENGTH.Read()) }
+      , max_ports_ { static_cast<uint8_t>(
+            cap_->HCSPARAMS1.Read().bits.max_ports) } {
   }
 
   Error Controller::Initialize() {
@@ -334,18 +330,21 @@ namespace usb::xhci {
     usbcmd.bits.enable_wrap_event = false;
     // Host controller must be halted before resetting it.
     if (!op_->USBSTS.Read().bits.host_controller_halted) {
-      usbcmd.bits.run_stop = false;  // stop
+      usbcmd.bits.run_stop = false; // stop
     }
 
     op_->USBCMD.Write(usbcmd);
-    while (!op_->USBSTS.Read().bits.host_controller_halted);
+    while (!op_->USBSTS.Read().bits.host_controller_halted)
+      ;
 
     // Reset controller
     usbcmd = op_->USBCMD.Read();
     usbcmd.bits.host_controller_reset = true;
     op_->USBCMD.Write(usbcmd);
-    while (op_->USBCMD.Read().bits.host_controller_reset);
-    while (op_->USBSTS.Read().bits.controller_not_ready);
+    while (op_->USBCMD.Read().bits.host_controller_reset)
+      ;
+    while (op_->USBSTS.Read().bits.controller_not_ready)
+      ;
 
     Log(kDebug, "MaxSlots: %u\n", cap_->HCSPARAMS1.Read().bits.max_device_slots);
     // Set "Max Slots Enabled" field in CONFIG.
@@ -354,9 +353,8 @@ namespace usb::xhci {
     op_->CONFIG.Write(config);
 
     auto hcsparams2 = cap_->HCSPARAMS2.Read();
-    const uint16_t max_scratchpad_buffers =
-      hcsparams2.bits.max_scratchpad_buffers_low
-      | (hcsparams2.bits.max_scratchpad_buffers_high << 5);
+    const uint16_t max_scratchpad_buffers = hcsparams2.bits.max_scratchpad_buffers_low
+        | (hcsparams2.bits.max_scratchpad_buffers_high << 5);
     if (max_scratchpad_buffers > 0) {
       auto scratchpad_buf_arr = AllocArray<void*>(max_scratchpad_buffers, 64, 4096);
       for (int i = 0; i < max_scratchpad_buffers; ++i) {
@@ -369,18 +367,19 @@ namespace usb::xhci {
           scratchpad_buf_arr);
     }
 
-    DCBAAP_Bitmap dcbaap{};
+    DCBAAP_Bitmap dcbaap {};
     dcbaap.SetPointer(reinterpret_cast<uint64_t>(devmgr_.DeviceContexts()));
     op_->DCBAAP.Write(dcbaap);
 
     auto primary_interrupter = &InterrupterRegisterSets()[0];
     if (auto err = cr_.Initialize(32)) {
-        return err;
+      return err;
     }
     if (auto err = RegisterCommandRing(&cr_, &op_->CRCR)) {
-        return err; }
+      return err;
+    }
     if (auto err = er_.Initialize(32, primary_interrupter)) {
-        return err;
+      return err;
     }
 
     // Enable interrupt for the primary interrupter
@@ -404,7 +403,8 @@ namespace usb::xhci {
     op_->USBCMD.Write(usbcmd);
     op_->USBCMD.Read();
 
-    while (op_->USBSTS.Read().bits.host_controller_halted);
+    while (op_->USBSTS.Read().bits.host_controller_halted)
+      ;
 
     return MAKE_ERROR(Error::kSuccess);
   }
@@ -426,28 +426,31 @@ namespace usb::xhci {
 
     memset(&dev.InputContext()->input_control_context, 0, sizeof(InputControlContext));
     memcpy(&dev.InputContext()->slot_context,
-           &dev.DeviceContext()->slot_context, sizeof(SlotContext));
+        &dev.DeviceContext()->slot_context, sizeof(SlotContext));
 
     auto slot_ctx = dev.InputContext()->EnableSlotContext();
     slot_ctx->bits.context_entries = 31;
-    const auto port_id{dev.DeviceContext()->slot_context.bits.root_hub_port_num};
-    const int port_speed{xhc.PortAt(port_id).Speed()};
+    const auto port_id { dev.DeviceContext()->slot_context.bits.root_hub_port_num };
+    const int port_speed { xhc.PortAt(port_id).Speed() };
     if (port_speed == 0 || port_speed > kSuperSpeedPlus) {
       return MAKE_ERROR(Error::kUnknownXHCISpeedID);
     }
 
-    auto convert_interval{
+    auto convert_interval {
       (port_speed == kFullSpeed || port_speed == kLowSpeed)
-      ? [](EndpointType type, int interval) { // for FS, LS
-        if (type == EndpointType::kIsochronous) return interval + 2;
-        else return MostSignificantBit(interval) + 3;
-      }
-      : [](EndpointType type, int interval) { // for HS, SS, SSP
-        return interval - 1;
-      }};
+          ? [](EndpointType type, int interval) { // for FS, LS
+              if (type == EndpointType::kIsochronous)
+                return interval + 2;
+              else
+                return MostSignificantBit(interval) + 3;
+            }
+          : [](EndpointType type, int interval) { // for HS, SS, SSP
+              return interval - 1;
+            }
+    };
 
     for (int i = 0; i < len; ++i) {
-      const DeviceContextIndex ep_dci{configs[i].ep_id};
+      const DeviceContextIndex ep_dci { configs[i].ep_id };
       auto ep_ctx = dev.InputContext()->EnableEndpoint(ep_dci);
       switch (configs[i].ep_type) {
       case EndpointType::kControl:
@@ -478,7 +481,7 @@ namespace usb::xhci {
 
     port_config_phase[port_id] = ConfigPhase::kConfiguringEndpoints;
 
-    ConfigureEndpointCommandTRB cmd{dev.InputContext(), dev.SlotID()};
+    ConfigureEndpointCommandTRB cmd { dev.InputContext(), dev.SlotID() };
     xhc.CommandRing()->Push(cmd);
     xhc.DoorbellRegisterAt(0)->Ring(0);
 
