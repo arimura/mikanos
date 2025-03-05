@@ -109,6 +109,7 @@ __attribute__((interrupt)) void IntHandlerXHCI(InterruptFrame* frame) {
       Log(kError, "Error while ProcessEvent: %s at %s:%d\n", err.Name(), err.File(), err.Line());
     }
   }
+  NotifyEndOfInterrupt();
 }
 
 extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config) {
