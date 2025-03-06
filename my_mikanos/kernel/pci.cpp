@@ -199,7 +199,7 @@ namespace pci {
       return ScanBus(0);
     }
 
-    for (uint8_t function = 1; function < 8; ++function) {
+    for (uint8_t function = 0; function < 8; ++function) {
       if (ReadVendorId(0, 0, function) == 0xffffu) {
         continue;
       }
@@ -278,7 +278,7 @@ namespace pci {
       MSIDeliveryMode delivery_mode,
       uint8_t vector,
       unsigned int num_vector_exponent) {
-    uint32_t msg_addr = 0xfee0000u | (apic_id << 12);
+    uint32_t msg_addr = 0xfee00000u | (apic_id << 12);
     uint32_t msg_data = (static_cast<uint32_t>(delivery_mode) << 8) | vector;
     if (trigger_mode == MSITriggerMode::kLevel) {
       msg_data |= 0xc000;
