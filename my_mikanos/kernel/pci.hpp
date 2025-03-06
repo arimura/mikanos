@@ -70,7 +70,7 @@ namespace pci {
         uint32_t multiple_msg_capable : 3;
         uint32_t multiple_msg_ebable : 3;
         uint32_t addr_64_capable : 1;
-        uint32_t per_vector_mask_caapable : 1;
+        uint32_t per_vector_mask_capable : 1;
         uint32_t : 7;
       } __attribute__((packed)) bits;
     } __attribute__((packed)) header;

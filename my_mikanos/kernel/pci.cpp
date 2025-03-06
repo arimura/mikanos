@@ -92,7 +92,7 @@ namespace {
 
     msi_cap.msg_data = ReadConfReg(dev, msg_data_addr);
 
-    if (msi_cap.header.bits.per_vector_mask_caapable) {
+    if (msi_cap.header.bits.per_vector_mask_capable) {
       msi_cap.mask_bits = ReadConfReg(dev, msg_data_addr + 4);
       msi_cap.pending_bits = ReadConfReg(dev, msg_data_addr + 8);
     }
@@ -112,7 +112,7 @@ namespace {
 
     WriteConfReg(dev, msg_data_addr, msi_cap.msg_data);
 
-    if (msi_cap.header.bits.per_vector_mask_caapable) {
+    if (msi_cap.header.bits.per_vector_mask_capable) {
       WriteConfReg(dev, msg_data_addr + 4, msi_cap.mask_bits);
       WriteConfReg(dev, msg_data_addr + 8, msi_cap.pending_bits);
     }
