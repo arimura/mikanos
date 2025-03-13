@@ -19,7 +19,7 @@ class ArrayQueue {
 
  private:
   T* data_;
-  size_t read_pos_, write_pos_, count;
+  size_t read_pos_, write_pos_, count_;
   const size_t capacity_;
 };
 
@@ -38,7 +38,7 @@ ArrayQueue<T>::ArrayQueue(T* buf, size_t size)
 
 template <typename T>
 Error ArrayQueue<T>::Push(const T& value) {
-  if (count_ == copacity_) {
+  if (count_ == capacity_) {
     return MAKE_ERROR(Error::kFull);
   }
 
