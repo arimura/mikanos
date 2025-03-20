@@ -1,6 +1,7 @@
 #include "usb/xhci/ring.hpp"
 
 #include "usb/memory.hpp"
+#include <cstring>
 
 namespace usb::xhci {
   Ring::~Ring() {
@@ -33,7 +34,7 @@ namespace usb::xhci {
       buf_[write_index_].data[i] = data[i];
     }
     buf_[write_index_].data[3]
-      = (data[3] & 0xfffffffeu) | static_cast<uint32_t>(cycle_bit_);
+        = (data[3] & 0xfffffffeu) | static_cast<uint32_t>(cycle_bit_);
   }
 
   TRB* Ring::Push(const std::array<uint32_t, 4>& data) {
@@ -42,7 +43,7 @@ namespace usb::xhci {
 
     ++write_index_;
     if (write_index_ == buf_size_ - 1) {
-      LinkTRB link{buf_};
+      LinkTRB link { buf_ };
       link.bits.toggle_cycle = true;
       CopyToLast(link.data);
 
@@ -54,7 +55,7 @@ namespace usb::xhci {
   }
 
   Error EventRing::Initialize(size_t buf_size,
-                              InterrupterRegisterSet* interrupter) {
+      InterrupterRegisterSet* interrupter) {
     if (buf_ != nullptr) {
       FreeMem(buf_);
     }
@@ -102,7 +103,7 @@ namespace usb::xhci {
     auto p = ReadDequeuePointer() + 1;
 
     TRB* segment_begin
-      = reinterpret_cast<TRB*>(erst_[0].bits.ring_segment_base_address);
+        = reinterpret_cast<TRB*>(erst_[0].bits.ring_segment_base_address);
     TRB* segment_end = segment_begin + erst_[0].bits.ring_segment_size;
 
     if (p == segment_end) {
