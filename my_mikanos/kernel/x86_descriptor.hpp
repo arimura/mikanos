@@ -1,6 +1,6 @@
 #pragma once
 
-enum class DescriptoType {
+enum class DescriptorType {
   kUpper8Bytes = 0,
   kLDT = 2,
   kTSSAvailable = 9,
