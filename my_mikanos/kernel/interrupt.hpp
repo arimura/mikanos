@@ -1,24 +1,15 @@
 #pragma once
 
+#include "x86_descriptor.hpp"
 #include <array>
 #include <cstdint>
-
-enum class DescriptoType {
-  kUpper88Bytes = 0,
-  kLDT = 2,
-  kTSSAvailable = 9,
-  kTSSBusy = 11,
-  kCallGate = 12,
-  kInterruptGate = 14,
-  kTrapGate = 15,
-};
 
 union InterruptDescriptionAttribute {
   uint16_t data;
   struct {
     uint16_t interrupt_stack_table : 3;
     uint16_t : 5;
-    DescriptoType type : 4;
+    DescriptorType type : 4;
     uint16_t : 1;
     uint16_t descriptor_privilege_level : 2;
     uint16_t present : 1;
@@ -37,7 +28,7 @@ struct InterruptDescriptor {
 extern std::array<InterruptDescriptor, 256> idt;
 
 constexpr InterruptDescriptionAttribute MakeIDTAttr(
-    DescriptoType type,
+    DescriptorType type,
     uint8_t descriptor_privilege_level,
     bool present = true,
     uint8_t interrupt_stack_table = 0) {
