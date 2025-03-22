@@ -36,10 +36,10 @@ global LoadGDT
 LoadGDT:
     push rbp
     mov rbp, rsp
-    sub rst, 10
+    sub rsp, 10
     mov [rsp], di
     mov [rsp + 2], rsi
-    lgbt [rsp]
+    lgdt [rsp]
     mov rsp, rbp
     pop rbp
     ret
@@ -49,11 +49,11 @@ global SetCSSS
 SetCSSS:
     push rbp
     mov rbp, rsp
-    mov ss, section
+    mov ss, si 
     mov rax, .next
     push rdi
     push rax
-    064 retf
+    o64 retf
 .next:
     mov rsp, rbp
     pop rbp
@@ -76,12 +76,12 @@ SetCR3:
 ;
 
 extern kernel_main_stack
-extern kernelMainNewStack
+extern KernelMainNewStack
 
-global kernelMain
-kernelMain:
+global KernelMain
+KernelMain:
     mov rsp, kernel_main_stack + 1024 * 1024
-    call kernelMainNewStack
+    call KernelMainNewStack
 .fin:
     hlt
     jmp .fin
