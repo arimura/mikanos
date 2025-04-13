@@ -42,6 +42,11 @@ void BitmapMemoryManager::MarkAllocated(FrameID start_frame, size_t num_frames) 
   }
 }
 
+void BitmapMemoryManager::SetMemoryRange(FrameID range_begin, FrameID range_end) {
+  range_begin = range_begin;
+  range_end_ = range_end;
+}
+
 bool BitmapMemoryManager::GetBit(FrameID frame) const {
   auto line_index = frame.ID() / kBitsPerMapLine;
   auto bit_index = frame.ID() % kBitsPerMapLine;
