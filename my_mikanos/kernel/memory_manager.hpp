@@ -46,6 +46,7 @@ class BitmapMemoryManager {
 
   WithError<FrameID> Allocate(size_t num_frames);
   Error Free(FrameID start_frame, size_t num_frames);
+  void MarkAllocated(FrameID start_frame, size_t num_frames);
 
   void SetMemoryRange(FrameID range_begin, FrameID range_end);
 
