@@ -16,14 +16,14 @@ class Layer {
   std::shared_ptr<Window> GetWindow() const;
 
   Layer& Move(Vector2D<int> pos);
-  Layer& MoveRectangle(Vector2D<int> pos_diff);
+  Layer& MoveRelative(Vector2D<int> pos_diff);
 
   void DrawTo(PixelWriter& writer) const;
 
  private:
   unsigned int id_;
   Vector2D<int> pos_;
-  std::shared_ptr<Window> Window_;
+  std::shared_ptr<Window> window_;
 };
 
 class LayerManager {
