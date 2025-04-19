@@ -29,7 +29,7 @@ class Window {
   WindowWriter* Writer();
 
   PixelColor& At(int x, int y);
-  const PixelColor& Ar(int x, int y) const;
+  const PixelColor& At(int x, int y) const;
 
   int Width() const;
   int Height() const;
