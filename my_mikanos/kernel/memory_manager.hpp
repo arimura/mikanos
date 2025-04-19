@@ -59,4 +59,4 @@ class BitmapMemoryManager {
   void SetBit(FrameID frame, bool allocated);
 };
 
-Error InirializeHeap(BitmapMemoryManager& memory_manager);
+Error InitializeHeap(BitmapMemoryManager& memory_manager);

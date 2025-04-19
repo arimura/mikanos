@@ -1,6 +1,12 @@
-/disk.img
-/repo
+/kernel.elf
+/hankaku.bin
+*.o
+.*.d
+*.swp
+
+/html
+/ipxe_root
+
+# my setting
 /mikanos
-**/*.o
-**/kernel.elf
-hankaku.bin
+/disk.img
