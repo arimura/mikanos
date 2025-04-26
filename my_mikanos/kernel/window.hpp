@@ -19,6 +19,7 @@ class Window {
    private:
     Window& window_;
   };
+
   Window(int width, int height);
   ~Window() = default;
   Window(const Window& rhs) = delete;

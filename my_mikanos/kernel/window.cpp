@@ -13,7 +13,7 @@ void Window::DrawTo(PixelWriter& writer, Vector2D<int> position) {
   if (!transparent_color_) {
     for (int y = 0; y < Height(); ++y) {
       for (int x = 0; x < Width(); ++x) {
-        writer.Write(position.x, position.y + y, At(x, y));
+        writer.Write(position.x + x, position.y + y, At(x, y));
       }
     }
     return;
