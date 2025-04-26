@@ -1,4 +1,4 @@
-/kernel.elf
+kernel.elf
 /hankaku.bin
 *.o
 .*.d
