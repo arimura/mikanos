@@ -267,7 +267,7 @@ extern "C" void KernelMainNewStack(
                         .Move({ 0, 0 })
                         .ID();
   mouse_layer_id = layer_manager->NewLayer()
-                       .SetWindow(bgwindow)
+                       .SetWindow(mouse_window)
                        .Move({ 200, 200 })
                        .ID();
   layer_manager->UpDown(bglayer_id, 0);

@@ -4,15 +4,16 @@
 
 class Console {
  public:
-  static const int kRows = 35, kColumns = 80;
+  static const int kRows = 25, kColumns = 80;
 
   Console(const PixelColor& fg_color, const PixelColor& bg_color);
   void PutString(const char* s);
   void SetWriter(PixelWriter* writer);
 
  private:
-  void NewLine();
+  void Newline();
   void Refresh();
+
   PixelWriter* writer_;
   const PixelColor fg_color_, bg_color_;
   char buffer_[kRows][kColumns + 1];
