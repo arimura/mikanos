@@ -14,6 +14,23 @@ inline bool operator!=(const PixelColor& lhs, const PixelColor& rhs) {
   return !(lhs == rhs);
 }
 
+template <typename T>
+struct Vector2D {
+  T x, y;
+
+  template <typename U>
+  Vector2D<T>& operator+=(const Vector2D<U>& rhs) {
+    x += rhs.x;
+    y += rhs.y;
+    return *this;
+  }
+};
+
+template <typename T, typename U>
+auto operator+(const Vector2D<T>& lhs, const Vector2D<U>& rhs) -> Vector2D<decltype(lhs.x + rhs.x)> {
+  return { lhs.x + rhs.x, lhs.y + rhs.y };
+}
+
 class PixelWriter {
  public:
   virtual ~PixelWriter() = default;
