@@ -35,11 +35,11 @@ void DrawMouseCursor(PixelWriter* piexel_writer, Vector2D<int> position) {
   for (int dy = 0; dy < kMouseCursorHeight; ++dy) {
     for (int dx = 0; dx < kMouseCursorWidth; ++dx) {
       if (mouse_cursor_shape[dy][dx] == '@') {
-        piexel_writer->Write(position.x + dx, position.y + dy, { 0, 0, 0 });
+        piexel_writer->Write(position + Vector2D<int> { dx, dy }, { 0, 0, 0 });
       } else if (mouse_cursor_shape[dy][dx] == '.') {
-        piexel_writer->Write(position.x + dx, position.y + dy, { 255, 255, 255 });
+        piexel_writer->Write(position + Vector2D<int> { dx, dy }, { 255, 255, 255 });
       } else {
-        piexel_writer->Write(position.x + dx, position.y + dy, kMouseTransparentColor);
+        piexel_writer->Write(position + Vector2D<int> { dx, dy }, kMouseTransparentColor);
       }
     }
   }
