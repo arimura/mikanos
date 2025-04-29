@@ -18,7 +18,7 @@ class Layer {
   Layer& Move(Vector2D<int> pos);
   Layer& MoveRelative(Vector2D<int> pos_diff);
 
-  void DrawTo(FrameBuffer* screen) const;
+  void DrawTo(FrameBuffer& screen) const;
 
  private:
   unsigned int id_;
@@ -28,7 +28,7 @@ class Layer {
 
 class LayerManager {
  public:
-  void SetWriter(PixelWriter* writer);
+  void SetWriter(FrameBuffer* screen);
   Layer& NewLayer();
   void Draw() const;
   void Move(unsigned int id, Vector2D<int> new_position);
