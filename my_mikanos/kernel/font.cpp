@@ -26,8 +26,8 @@ void WriteAscii(PixelWriter& writer, Vector2D<int> pos, char c, const PixelColor
   }
 }
 
-void WriteString(PixelWriter& writer, int x, int y, const char* s, const PixelColor& color) {
+void WriteString(PixelWriter& writer, Vector2D<int> pos, const char* s, const PixelColor& color) {
   for (int i = 0; s[i] != '\0'; ++i) {
-    WriteAscii(writer, x + 8 * i, y, s[i], color);
+    WriteAscii(writer, pos + Vector2D<int> { 8 * i, 0 }, s[i], color);
   }
 }
