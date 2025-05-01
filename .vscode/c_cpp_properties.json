@@ -6,13 +6,17 @@
                 "${workspaceFolder}/**",
                 "/home/vscode/edk2/MdePkg/Include",
                 "/home/vscode/edk2/MdePkg/Include/**",
-                "/home/vscode/osbook/devenv/x86_64-elf/include"
+                "/home/vscode/osbook/devenv/x86_64-elf/include",
+                "/home/vscode/osbook/devenv/x86_64-elf/include/c++/v1"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/clang++",
+            "compilerArgs": [
+                "--target=x86_64-elf"
+            ],
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "linux-clang-arm64"
+            "intelliSenseMode": "linux-clang-x64"
         }
     ],
     "version": 4
