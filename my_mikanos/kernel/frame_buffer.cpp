@@ -33,7 +33,7 @@ Error FrameBuffer::Initialize(const FrameBufferConfig& config) {
 }
 
 Error FrameBuffer::Copy(Vector2D<int> pos, const FrameBuffer& src) {
-  if (config_.pixel_format != src->config_.pixel_format) {
+  if (config_.pixel_format != src.config_.pixel_format) {
     return MAKE_ERROR(Error::kUnknownPizxelFormat);
   }
 
