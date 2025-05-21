@@ -55,7 +55,7 @@ Vector2D<T> ElementMax(const Vector2D<T>& lhs, const Vector2D<T>& rhs) {
 
 template <typename T>
 Vector2D<T> ElementMin(const Vector2D<T>& lhs, const Vector2D<T>& rhs) {
-  return { std::min(lhs.x, rhs.x), std::min(lhs.y, lhs.y) };
+  return { std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y) };
 }
 
 template <typename T>
