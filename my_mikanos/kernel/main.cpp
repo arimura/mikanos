@@ -156,13 +156,13 @@ extern "C" void KernelMainNewStack(
           (desc->physical_start - available_end) / kBytesPerFrame);
     }
 
-    const auto physical_end = desc->physical_start + desc->number_of_pages * kUIFIPageSize;
+    const auto physical_end = desc->physical_start + desc->number_of_pages * kUEFIPageSize;
     if (IsAvailable(static_cast<MemoryType>(desc->type))) {
       available_end = physical_end;
     } else {
       memory_manager->MarkAllocated(
           FrameID { desc->physical_start / kBytesPerFrame },
-          desc->number_of_pages * kUIFIPageSize / kBytesPerFrame);
+          desc->number_of_pages * kUEFIPageSize / kBytesPerFrame);
     }
   }
   memory_manager->SetMemoryRange(FrameID { 1 }, FrameID { available_end / kBytesPerFrame });

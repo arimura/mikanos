@@ -52,6 +52,6 @@ inline bool IsAvailable(MemoryType memory_type) {
   return memory_type == MemoryType::kEfiBootServicesCode || memory_type == MemoryType::kEfiBootServicesData || memory_type == MemoryType::kEfiConventionalMemory;
 }
 
-const int kUIFIPageSize = 4096;
+const int kUEFIPageSize = 4096;
 
 #endif
