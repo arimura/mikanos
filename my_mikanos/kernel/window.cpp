@@ -24,8 +24,8 @@ Window::Window(int width, int height, PixelFormat shadow_format)
 
 void Window::DrawTo(FrameBuffer& dst, Vector2D<int> pos, const Rectangle<int>& area) {
   if (!transparent_color_) {
-    Rectangle<int> widow_are { pos, Size() };
-    Rectangle<int> intersection = area & widow_are;
+    Rectangle<int> window_area { pos, Size() };
+    Rectangle<int> intersection = area & window_area;
     dst.Copy(intersection.pos, shadow_buffer_, { intersection.pos - pos, intersection.size });
     return;
   }
