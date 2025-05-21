@@ -102,7 +102,7 @@ class FrameBufferWriter : public PixelWriter {
   const FrameBufferConfig& config_;
 };
 
-class RGBResv8bitPerColorPixelWriter : public FrameBufferWriter {
+class RGBResv8BitPerColorPixelWriter : public FrameBufferWriter {
  public:
   using FrameBufferWriter::FrameBufferWriter;
   virtual void Write(Vector2D<int> pos, const PixelColor& c) override;

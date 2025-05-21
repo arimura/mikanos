@@ -1,6 +1,6 @@
 #include "graphics.hpp"
 
-void RGBResv8bitPerColorPixelWriter::Write(Vector2D<int> pos, const PixelColor& c) {
+void RGBResv8itPerColorPixelWriter::Write(Vector2D<int> pos, const PixelColor& c) {
   auto p = PixelAt(pos);
   p[0] = c.r;
   p[1] = c.g;

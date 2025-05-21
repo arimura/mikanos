@@ -44,7 +44,7 @@ Error FrameBuffer::Initialize(const FrameBufferConfig& config) {
 
   switch (config_.pixel_format) {
   case kPixelRGBResv8BitPerColor:
-    writer_ = std::make_unique<RGBResv8bitPerColorPixelWriter>(config_);
+    writer_ = std::make_unique<RGBResv8BitPerColorPixelWriter>(config_);
     break;
   case kPixelBGRResv8BitPerColor:
     writer_ = std::make_unique<BGRResv8BitPerColorPixelWriter>(config_);

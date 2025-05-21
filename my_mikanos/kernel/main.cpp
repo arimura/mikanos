@@ -33,7 +33,7 @@ void operator delete(void* obj) noexcept {
 char memory_manager_buf[sizeof(BitmapMemoryManager)];
 BitmapMemoryManager* memory_manager;
 
-char pixel_writer_buf[sizeof(RGBResv8bitPerColorPixelWriter)];
+char pixel_writer_buf[sizeof(RGBResv8BitPerColorPixelWriter)];
 PixelWriter* pixel_writer;
 
 char console_buf[sizeof(Console)];
@@ -116,7 +116,7 @@ extern "C" void KernelMainNewStack(
   switch (frame_buffer_config.pixel_format) {
   case kPixelRGBResv8BitPerColor:
     pixel_writer = new (pixel_writer_buf)
-        RGBResv8bitPerColorPixelWriter { frame_buffer_config };
+        RGBResv8BitPerColorPixelWriter { frame_buffer_config };
     break;
   case kPixelBGRResv8BitPerColor:
     pixel_writer = new (pixel_writer_buf)
