@@ -27,7 +27,7 @@ class Error {
     kUnknownXHCISpeedID,
     kNoWaiter,
     kNoPCIMSI,
-    kUnknownPizxelFormat,
+    kUnknownPixelFormat,
     kLastOfCode, // この列挙子は常に最後に配置する
   };
 

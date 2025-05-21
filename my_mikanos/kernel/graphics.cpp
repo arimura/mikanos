@@ -7,7 +7,7 @@ void RGBResv8bitPerColorPixelWriter::Write(Vector2D<int> pos, const PixelColor& 
   p[2] = c.b;
 }
 
-void BGRResv8bitPerColorPixelWriter::Write(Vector2D<int> pos, const PixelColor& c) {
+void BGRResv8BitPerColorPixelWriter::Write(Vector2D<int> pos, const PixelColor& c) {
   auto p = PixelAt(pos);
   p[0] = c.b;
   p[1] = c.g;

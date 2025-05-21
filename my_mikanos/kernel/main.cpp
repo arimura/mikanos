@@ -120,7 +120,7 @@ extern "C" void KernelMainNewStack(
     break;
   case kPixelBGRResv8BitPerColor:
     pixel_writer = new (pixel_writer_buf)
-        BGRResv8bitPerColorPixelWriter { frame_buffer_config };
+        BGRResv8BitPerColorPixelWriter { frame_buffer_config };
     break;
   }
 

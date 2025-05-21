@@ -29,7 +29,7 @@ Error FrameBuffer::Initialize(const FrameBufferConfig& config) {
 
   const auto bytes_per_pixel = BytesPerPixel(config_.pixel_format);
   if (bytes_per_pixel <= 0) {
-    return MAKE_ERROR(Error::kUnknownPizxelFormat);
+    return MAKE_ERROR(Error::kUnknownPixelFormat);
   }
 
   if (config_.frame_buffer) {
@@ -47,10 +47,10 @@ Error FrameBuffer::Initialize(const FrameBufferConfig& config) {
     writer_ = std::make_unique<RGBResv8bitPerColorPixelWriter>(config_);
     break;
   case kPixelBGRResv8BitPerColor:
-    writer_ = std::make_unique<BGRResv8bitPerColorPixelWriter>(config_);
+    writer_ = std::make_unique<BGRResv8BitPerColorPixelWriter>(config_);
     break;
   default:
-    return MAKE_ERROR(Error::kUnknownPizxelFormat);
+    return MAKE_ERROR(Error::kUnknownPixelFormat);
   }
 
   return MAKE_ERROR(Error::kSuccess);
@@ -58,12 +58,12 @@ Error FrameBuffer::Initialize(const FrameBufferConfig& config) {
 
 Error FrameBuffer::Copy(Vector2D<int> dst_pos, const FrameBuffer& src, const Rectangle<int>& src_area) {
   if (config_.pixel_format != src.config_.pixel_format) {
-    return MAKE_ERROR(Error::kUnknownPizxelFormat);
+    return MAKE_ERROR(Error::kUnknownPixelFormat);
   }
 
   const auto bytes_per_pixel = BytesPerPixel(config_.pixel_format);
   if (bytes_per_pixel <= 0) {
-    return MAKE_ERROR(Error::kUnknownPizxelFormat);
+    return MAKE_ERROR(Error::kUnknownPixelFormat);
   }
 
   const Rectangle<int> src_area_shifted { dst_pos, src_area.size };
