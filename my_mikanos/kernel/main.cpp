@@ -203,7 +203,7 @@ extern "C" void KernelMainNewStack(
     Log(kInfo, "xHc has been found: %d.%d.%d\n", xhc_dev->bus, xhc_dev->device, xhc_dev->function);
   }
 
-  SetIDTEntry(idt[InterruptVector::kHCI],
+  SetIDTEntry(idt[InterruptVector::kXHCI],
       MakeIDTAttr(DescriptorType::kInterruptGate, 0),
       reinterpret_cast<uint64_t>(IntHandlerXHCI), kernel_cs);
   LoadIDT(sizeof(idt) - 1, reinterpret_cast<uintptr_t>(&idt[0]));
@@ -212,7 +212,7 @@ extern "C" void KernelMainNewStack(
   pci::ConfigureMSIFixedDestination(
       *xhc_dev, bsp_local_apic_id,
       pci::MSITriggerMode::kLevel, pci::MSIDeliveryMode::kFixed,
-      InterruptVector::kHCI, 0);
+      InterruptVector::kXHCI, 0);
 
   const WithError<uint64_t> xhc_bar = pci::ReadBar(*xhc_dev, 0);
   Log(kDebug, "ReadBar: %s\n", xhc_bar.error.Name());

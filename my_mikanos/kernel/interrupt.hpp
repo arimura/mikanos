@@ -48,7 +48,7 @@ void SetIDTEntry(InterruptDescriptor& desc,
 class InterruptVector {
  public:
   enum Number {
-    kHCI = 0x40,
+    kXHCI = 0x40,
   };
 };
 
