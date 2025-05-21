@@ -47,6 +47,12 @@ Layer& LayerManager::NewLayer() {
   return *layers_.emplace_back(new Layer { latest_id_ });
 }
 
+void LayerManager::Draw(const Rectangle<int>& area) const {
+  for (auto layer : layer_stack_) {
+    layer->DrawTo(*screen_, area);
+  }
+}
+
 void LayerManager::Draw(unsigned int id) const {
   bool draw = false;
   Rectangle<int> window_area;
