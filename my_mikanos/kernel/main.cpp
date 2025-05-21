@@ -152,8 +152,8 @@ extern "C" void KernelMainNewStack(
     auto desc = reinterpret_cast<const MemoryDescriptor*>(iter);
     if (available_end < desc->physical_start) {
       memory_manager->MarkAllocated(
-          FrameID { available_end / kBytePerFrame },
-          (desc->physical_start - available_end) / kBytePerFrame);
+          FrameID { available_end / kBytesPerFrame },
+          (desc->physical_start - available_end) / kBytesPerFrame);
     }
 
     const auto physical_end = desc->physical_start + desc->number_of_pages * kUIFIPageSize;
@@ -161,11 +161,11 @@ extern "C" void KernelMainNewStack(
       available_end = physical_end;
     } else {
       memory_manager->MarkAllocated(
-          FrameID { desc->physical_start / kBytePerFrame },
-          desc->number_of_pages * kUIFIPageSize / kBytePerFrame);
+          FrameID { desc->physical_start / kBytesPerFrame },
+          desc->number_of_pages * kUIFIPageSize / kBytesPerFrame);
     }
   }
-  memory_manager->SetMemoryRange(FrameID { 1 }, FrameID { available_end / kBytePerFrame });
+  memory_manager->SetMemoryRange(FrameID { 1 }, FrameID { available_end / kBytesPerFrame });
 
   if (auto err = InitializeHeap(*memory_manager)) {
     Log(kError, "failed to allocate pages: %s at %s:%d\n", err.Name(), err.File(), err.Line());

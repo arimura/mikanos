@@ -19,14 +19,14 @@ namespace {
   }
 }
 
-static const auto kBytePerFrame { 4_KiB };
+static const auto kBytesPerFrame { 4_KiB };
 
 class FrameID {
  public:
   explicit FrameID(size_t id)
       : id_ { id } { }
   size_t ID() const { return id_; }
-  void* Frame() const { return reinterpret_cast<void*>(id_ * kBytePerFrame); }
+  void* Frame() const { return reinterpret_cast<void*>(id_ * kBytesPerFrame); }
 
  private:
   size_t id_;
@@ -37,7 +37,7 @@ static const FrameID kNullFrame { std::numeric_limits<size_t>::max() };
 class BitmapMemoryManager {
  public:
   static const auto kMaxPhysicalMemoryBytes { 128_Gib };
-  static const auto kFrameCount { kMaxPhysicalMemoryBytes / kBytePerFrame };
+  static const auto kFrameCount { kMaxPhysicalMemoryBytes / kBytesPerFrame };
 
   using MapLineType = unsigned long;
   static const size_t kBitsPerMapLine { 8 * sizeof(MapLineType) };
