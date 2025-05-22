@@ -27,9 +27,6 @@
 #include "usb/xhci/xhci.hpp"
 #include "window.hpp"
 
-void operator delete(void* obj) noexcept {
-}
-
 char memory_manager_buf[sizeof(BitmapMemoryManager)];
 BitmapMemoryManager* memory_manager;
 
