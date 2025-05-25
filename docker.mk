@@ -32,5 +32,5 @@ update-tools_def:
 
 clean:
 	rm -f $(KERNEL_DIR)/$(KERNEL)
-	rm -f $(KERNEL_DIR)/*.o
+	find $(KERNEL_DIR) -type f -name '*.o' -delete
 	rm -f disk.img
