@@ -80,6 +80,7 @@ void MouseObserver(uint8_t buttons, int8_t displacement_x, int8_t displacement_y
   } else if (previous_buttons && !left_pressed) {
     mouse_drag_layer_id = 0;
   }
+  previous_buttons = buttons;
 }
 
 void SwitchThci2Xhci(const pci::Device& xhc_dev) {
