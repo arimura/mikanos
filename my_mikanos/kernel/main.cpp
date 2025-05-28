@@ -49,6 +49,7 @@ void InitializeMainWindow() {
                              .SetDraggable(true)
                              .Move({ 300, 100 })
                              .ID();
+  layer_manager->UpDown(main_window_layer_id, std::numeric_limits<int>::max());
 }
 
 std::deque<Message>* main_queue;
