@@ -7,11 +7,12 @@
 #pragma once
 
 #include "error.hpp"
-#include "usb/xhci/registers.hpp"
 #include "usb/xhci/context.hpp"
-#include "usb/xhci/ring.hpp"
-#include "usb/xhci/port.hpp"
 #include "usb/xhci/devmgr.hpp"
+#include "usb/xhci/port.hpp"
+#include "usb/xhci/registers.hpp"
+#include "usb/xhci/ring.hpp"
+#include <memory>
 
 namespace usb::xhci {
   class Controller {
@@ -23,7 +24,7 @@ namespace usb::xhci {
     EventRing* PrimaryEventRing() { return &er_; }
     DoorbellRegister* DoorbellRegisterAt(uint8_t index);
     Port PortAt(uint8_t port_num) {
-      return Port{port_num, PortRegisterSets()[port_num - 1]};
+      return Port { port_num, PortRegisterSets()[port_num - 1] };
     }
     uint8_t MaxPorts() const { return max_ports_; }
     DeviceManager* DeviceManager() { return &devmgr_; }
@@ -41,15 +42,15 @@ namespace usb::xhci {
     EventRing er_;
 
     InterrupterRegisterSetArray InterrupterRegisterSets() const {
-      return {mmio_base_ + cap_->RTSOFF.Read().Offset() + 0x20u, 1024};
+      return { mmio_base_ + cap_->RTSOFF.Read().Offset() + 0x20u, 1024 };
     }
 
     PortRegisterSetArray PortRegisterSets() const {
-      return {reinterpret_cast<uintptr_t>(op_) + 0x400u, max_ports_};
+      return { reinterpret_cast<uintptr_t>(op_) + 0x400u, max_ports_ };
     }
 
     DoorbellRegisterArray DoorbellRegisters() const {
-      return {mmio_base_ + cap_->DBOFF.Read().Offset(), 256};
+      return { mmio_base_ + cap_->DBOFF.Read().Offset(), 256 };
     }
   };
 
@@ -64,4 +65,7 @@ namespace usb::xhci {
    * @return イベントを正常に処理できたら Error::kSuccess
    */
   Error ProcessEvent(Controller& xhc);
+  extern Controller* controller;
+  void Initialize();
+  void ProcessEvents();
 }

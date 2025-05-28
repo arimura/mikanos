@@ -1,8 +1,10 @@
 #pragma once
 
+#include "message.hpp"
 #include "x86_descriptor.hpp"
 #include <array>
 #include <cstdint>
+#include <deque>
 
 union InterruptDescriptionAttribute {
   uint16_t data;
@@ -61,3 +63,5 @@ struct InterruptFrame {
 };
 
 void NotifyEndOfInterrupt();
+
+void InitializeInterrupt(std::deque<Message>* msg_queue);

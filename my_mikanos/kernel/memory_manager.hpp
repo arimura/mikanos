@@ -1,5 +1,6 @@
 #pragma once
 
+#include "memory_map.hpp"
 #include <array>
 #include <limits>
 
@@ -59,4 +60,4 @@ class BitmapMemoryManager {
   void SetBit(FrameID frame, bool allocated);
 };
 
-Error InitializeHeap(BitmapMemoryManager& memory_manager);
+void InitializeMemoryManager(const MemoryMap& memory_map);
