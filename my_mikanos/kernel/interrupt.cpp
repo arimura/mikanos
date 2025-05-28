@@ -1,6 +1,9 @@
 #include "interrupt.hpp"
 #include <cstdint>
 
+#include "asmfunc.h"
+#include "segment.hpp"
+
 std::array<InterruptDescriptor, 256> idt;
 
 void SetIDTEntry(InterruptDescriptor& desc,
