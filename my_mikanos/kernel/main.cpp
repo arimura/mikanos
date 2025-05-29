@@ -22,6 +22,7 @@
 #include "paging.hpp"
 #include "pci.hpp"
 #include "segment.hpp"
+#include "timer.hpp"
 #include "usb/xhci/xhci.hpp"
 #include "window.hpp"
 
@@ -82,6 +83,8 @@ extern "C" void KernelMainNewStack(
   InitializeMouse();
   layer_manager->Draw({ { 0, 0 }, ScreenSize() });
 
+  InitializeLAPICTimer();
+
   char str[128];
   unsigned int count = 0;
 
@@ -105,6 +108,8 @@ extern "C" void KernelMainNewStack(
     case Message::kInterruptXHCI:
       usb::xhci::ProcessEvents();
       break;
+    case Message::kInterruptLAPICTimer:
+      printk("Timer interrupt\n");
     default:
       Log(kError, "Unknow message type: %d\n", msg.type);
     }
