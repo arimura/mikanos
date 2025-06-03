@@ -82,7 +82,9 @@
         "*.tcc": "cpp",
         "memory_resource": "cpp",
         "shared_mutex": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "simplefilesystem.h": "c",
+        "loadedimage.h": "c"
     },
     "editor.formatOnSave": true
 }
