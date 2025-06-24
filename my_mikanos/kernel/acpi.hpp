@@ -45,10 +45,12 @@ namespace acpi {
     uint32_t pm_tmr_blk;
     char reserved2[112 - 80];
     uint32_t flags;
-    char reserved3[274 - 116];
+    char reserved3[276 - 116];
   } __attribute__((packed));
 
   extern const FADT* fadt;
+  const int kPMTimerFreq = 3579545;
 
+  void WaitMilliseconds(unsigned long msec);
   void Initialize(const RSDP& rsdp);
 };
