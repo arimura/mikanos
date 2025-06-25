@@ -36,13 +36,13 @@ const CHAR16* GetMemoryTypeUnicode(EFI_MEMORY_TYPE type) {
   case EfiLoaderData:
     return L"EfiLoaderData";
   case EfiBootServicesCode:
-    return L"EfiBootServiceCode";
+    return L"EfiBootServicesCode";
   case EfiBootServicesData:
-    return L"EfiBootServiceData";
+    return L"EfiBootServicesData";
   case EfiRuntimeServicesCode:
-    return L"EfiRuntimeServiceCode";
+    return L"EfiRuntimeServicesCode";
   case EfiRuntimeServicesData:
-    return L"EfiRuntimeServiceData";
+    return L"EfiRuntimeServicesData";
   case EfiConventionalMemory:
     return L"EfiConventionalMemory";
   case EfiUnusableMemory:
@@ -67,14 +67,19 @@ const CHAR16* GetMemoryTypeUnicode(EFI_MEMORY_TYPE type) {
 }
 
 EFI_STATUS SaveMemoryMap(struct MemoryMap* map, EFI_FILE_PROTOCOL* file) {
+  EFI_STATUS status;
   CHAR8 buf[256];
   UINTN len;
 
-  CHAR8* header = "Index, Type, Type(name), PhysicalStart, NumbderOfPages, Attribute\n";
+  CHAR8* header = "Index, Type, Type(name), PhysicalStart, NumberOfPages, Attribute\n";
   len = AsciiStrLen(header);
-  file->Write(file, &len, header);
+  status = file->Write(file, &len, header);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-  Print(L"map->buffer = %08lx, map->map_size = %08lx\n", map->buffer, map->map_size);
+  Print(L"map->buffer = %08lx, map->map_size = %08lx\n",
+      map->buffer, map->map_size);
 
   EFI_PHYSICAL_ADDRESS iter;
   int i;
@@ -88,54 +93,71 @@ EFI_STATUS SaveMemoryMap(struct MemoryMap* map, EFI_FILE_PROTOCOL* file) {
         i, desc->Type, GetMemoryTypeUnicode(desc->Type),
         desc->PhysicalStart, desc->NumberOfPages,
         desc->Attribute & 0xffffflu);
-    file->Write(file, &len, buf);
+    status = file->Write(file, &len, buf);
+    if (EFI_ERROR(status)) {
+      return status;
+    }
   }
 
   return EFI_SUCCESS;
 }
 
 EFI_STATUS OpenRootDir(EFI_HANDLE image_handle, EFI_FILE_PROTOCOL** root) {
+  EFI_STATUS status;
   EFI_LOADED_IMAGE_PROTOCOL* loaded_image;
   EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* fs;
 
-  gBS->OpenProtocol(
+  status = gBS->OpenProtocol(
       image_handle,
       &gEfiLoadedImageProtocolGuid,
       (VOID**)&loaded_image,
       image_handle,
       NULL,
       EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-  gBS->OpenProtocol(
+  status = gBS->OpenProtocol(
       loaded_image->DeviceHandle,
       &gEfiSimpleFileSystemProtocolGuid,
       (VOID**)&fs,
       image_handle,
       NULL,
       EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-  fs->OpenVolume(fs, root);
-  return EFI_SUCCESS;
+  return fs->OpenVolume(fs, root);
 }
 
 EFI_STATUS OpenGOP(EFI_HANDLE image_handle,
     EFI_GRAPHICS_OUTPUT_PROTOCOL** gop) {
+  EFI_STATUS status;
   UINTN num_gop_handles = 0;
   EFI_HANDLE* gop_handles = NULL;
-  gBS->LocateHandleBuffer(
+
+  status = gBS->LocateHandleBuffer(
       ByProtocol,
       &gEfiGraphicsOutputProtocolGuid,
       NULL,
       &num_gop_handles,
       &gop_handles);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
-  gBS->OpenProtocol(
+  status = gBS->OpenProtocol(
       gop_handles[0],
       &gEfiGraphicsOutputProtocolGuid,
       (VOID**)gop,
       image_handle,
       NULL,
       EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+  if (EFI_ERROR(status)) {
+    return status;
+  }
 
   FreePool(gop_handles);
 
@@ -159,13 +181,11 @@ const CHAR16* GetPixelFormatUnicode(EFI_GRAPHICS_PIXEL_FORMAT fmt) {
   }
 }
 
-// #@@range_begin(halt)
 void Halt(void) {
   while (1)
     __asm__("hlt");
 }
 
-// #@@range_begin(clac_addr_func)
 void CalcLoadAddressRange(Elf64_Ehdr* ehdr, UINT64* first, UINT64* last) {
   Elf64_Phdr* phdr = (Elf64_Phdr*)((UINT64)ehdr + ehdr->e_phoff);
   *first = MAX_UINT64;
@@ -177,9 +197,7 @@ void CalcLoadAddressRange(Elf64_Ehdr* ehdr, UINT64* first, UINT64* last) {
     *last = MAX(*last, phdr[i].p_vaddr + phdr[i].p_memsz);
   }
 }
-// #@@range_end(calc_addr_func)
 
-// #@@range_begin(copy_sem_func)
 void CopyLoadSegments(Elf64_Ehdr* ehdr) {
   Elf64_Phdr* phdr = (Elf64_Phdr*)((UINT64)ehdr + ehdr->e_phoff);
   for (Elf64_Half i = 0; i < ehdr->e_phnum; ++i) {
@@ -193,13 +211,13 @@ void CopyLoadSegments(Elf64_Ehdr* ehdr) {
     SetMem((VOID*)(phdr[i].p_vaddr + phdr[i].p_filesz), remain_bytes, 0);
   }
 }
-// #@@range_end(copy_segm_func)
 
 EFI_STATUS EFIAPI UefiMain(
     EFI_HANDLE image_handle,
     EFI_SYSTEM_TABLE* system_table) {
   EFI_STATUS status;
-  Print(L"HEllo, Mikan World!\n");
+
+  Print(L"Hello, Mikan World!\n");
 
   CHAR8 memmap_buf[4096 * 4];
   struct MemoryMap memmap = { sizeof(memmap_buf), memmap_buf, 0, 0, 0, 0 };
@@ -213,6 +231,7 @@ EFI_STATUS EFIAPI UefiMain(
   status = OpenRootDir(image_handle, &root_dir);
   if (EFI_ERROR(status)) {
     Print(L"failed to open root directory: %r\n", status);
+    Halt();
   }
 
   EFI_FILE_PROTOCOL* memmap_file;
@@ -220,8 +239,8 @@ EFI_STATUS EFIAPI UefiMain(
       root_dir, &memmap_file, L"\\memmap",
       EFI_FILE_MODE_READ | EFI_FILE_MODE_WRITE | EFI_FILE_MODE_CREATE, 0);
   if (EFI_ERROR(status)) {
-    Print(L"faile to open file '\\memmap': %r\n, status");
-    Print(L"Ingnored.\n");
+    Print(L"failed to open file '\\memmap': %r\n", status);
+    Print(L"Ignored.\n");
   } else {
     status = SaveMemoryMap(&memmap, memmap_file);
     if (EFI_ERROR(status)) {
@@ -230,16 +249,16 @@ EFI_STATUS EFIAPI UefiMain(
     }
     status = memmap_file->Close(memmap_file);
     if (EFI_ERROR(status)) {
-      Print(L"failed to close memory map: %r\n");
+      Print(L"failed to close memory map: %r\n", status);
       Halt();
     }
   }
 
-  // #@@range_begin(gop)
   EFI_GRAPHICS_OUTPUT_PROTOCOL* gop;
   status = OpenGOP(image_handle, &gop);
   if (EFI_ERROR(status)) {
     Print(L"failed to open GOP: %r\n", status);
+    Halt();
   }
 
   Print(L"Resolution: %ux%u, Pixel Format: %s, %u pixels/line\n",
@@ -262,7 +281,7 @@ EFI_STATUS EFIAPI UefiMain(
       root_dir, &kernel_file, L"\\kernel.elf",
       EFI_FILE_MODE_READ, 0);
   if (EFI_ERROR(status)) {
-    Print(L"failed to open file '//kernel.elf': %r\n", status);
+    Print(L"failed to open file '\\kernel.elf': %r\n", status);
     Halt();
   }
 
@@ -276,7 +295,6 @@ EFI_STATUS EFIAPI UefiMain(
     Halt();
   }
 
-  // #@@range_begin(read_kernel)
   EFI_FILE_INFO* file_info = (EFI_FILE_INFO*)file_info_buffer;
   UINTN kernel_file_size = file_info->FileSize;
 
@@ -291,30 +309,27 @@ EFI_STATUS EFIAPI UefiMain(
     Print(L"error: %r", status);
     Halt();
   }
-  // #@@range_end(read_kernel)
 
-  // #@@range_begin(alloc_pages)
   Elf64_Ehdr* kernel_ehdr = (Elf64_Ehdr*)kernel_buffer;
   UINT64 kernel_first_addr, kernel_last_addr;
   CalcLoadAddressRange(kernel_ehdr, &kernel_first_addr, &kernel_last_addr);
 
   UINTN num_pages = (kernel_last_addr - kernel_first_addr + 0xfff) / 0x1000;
-  status = gBS->AllocatePages(AllocateAddress, EfiLoaderData, num_pages, &kernel_first_addr);
+  status = gBS->AllocatePages(AllocateAddress, EfiLoaderData,
+      num_pages, &kernel_first_addr);
   if (EFI_ERROR(status)) {
     Print(L"failed to allocate pages: %r\n", status);
     Halt();
   }
-  // #@@range_end(alloc_pages)
 
-  // #@@range_begin(copy_segments)
   CopyLoadSegments(kernel_ehdr);
-  Print(L"Kernel: 0x%0l - 0x%0lx\n", kernel_first_addr, kernel_last_addr);
+  Print(L"Kernel: 0x%0lx - 0x%0lx\n", kernel_first_addr, kernel_last_addr);
 
   status = gBS->FreePool(kernel_buffer);
   if (EFI_ERROR(status)) {
     Print(L"failed to free pool: %r\n", status);
+    Halt();
   }
-  // #@@range_end(copy_segments)
 
   status = gBS->ExitBootServices(image_handle, memmap.map_key);
   if (EFI_ERROR(status)) {
@@ -325,14 +340,12 @@ EFI_STATUS EFIAPI UefiMain(
     }
     status = gBS->ExitBootServices(image_handle, memmap.map_key);
     if (EFI_ERROR(status)) {
-      Print(L"Could not exit boot service: %r\n");
+      Print(L"Could not exit boot service: %r\n", status);
       Halt();
     }
   }
 
-  // #@@range_begin(get_entry_pont)
   UINT64 entry_addr = *(UINT64*)(kernel_first_addr + 24);
-  // #@@range_end(get_entry_pont)
 
   struct FrameBufferConfig config = {
     (UINT8*)gop->Mode->FrameBufferBase,
@@ -355,16 +368,18 @@ EFI_STATUS EFIAPI UefiMain(
 
   VOID* acpi_table = NULL;
   for (UINTN i = 0; i < system_table->NumberOfTableEntries; ++i) {
-    if (CompareGuid(&gEfiAcpiTableGuid, &system_table->ConfigurationTable[i].VendorGuid)) {
+    if (CompareGuid(&gEfiAcpiTableGuid,
+            &system_table->ConfigurationTable[i].VendorGuid)) {
       acpi_table = system_table->ConfigurationTable[i].VendorTable;
       break;
     }
   }
 
   typedef void EntryPointType(const struct FrameBufferConfig*,
-      const struct MemoryMap*);
+      const struct MemoryMap*,
+      const VOID*);
   EntryPointType* entry_point = (EntryPointType*)entry_addr;
-  entry_point(&config, &memmap);
+  entry_point(&config, &memmap, acpi_table);
 
   Print(L"All done\n");
 
