@@ -187,10 +187,10 @@ void CopyLoadSegments(Elf64_Ehdr* ehdr) {
       continue;
 
     UINT64 segm_in_file = (UINT64)ehdr + phdr[i].p_offset;
-    CopyMem((VOID*)phdr[i].p_vaddr, (VOID*)segm_in_file, phdr[i].p_filsesz);
+    CopyMem((VOID*)phdr[i].p_vaddr, (VOID*)segm_in_file, phdr[i].p_filesz);
 
-    UINTN remain_bytes = phdr[i].p_memsz - phdr[i].p_filsesz;
-    SetMem((VOID*)(phdr[i].p_vaddr + phdr[i].p_filsesz), remain_bytes, 0);
+    UINTN remain_bytes = phdr[i].p_memsz - phdr[i].p_filesz;
+    SetMem((VOID*)(phdr[i].p_vaddr + phdr[i].p_filesz), remain_bytes, 0);
   }
 }
 // #@@range_end(copy_segm_func)
