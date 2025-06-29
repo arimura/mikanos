@@ -20,6 +20,7 @@ class Task {
   static const size_t kDefalultStackBytes = 4096;
 
   Task(uint64_t id);
+  Task& InitContext(TaskFunc* f, int64_t data);
   TaskContext& Context();
 
  private:
