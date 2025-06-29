@@ -31,6 +31,7 @@
 #include "paging.hpp"
 #include "pci.hpp"
 #include "segment.hpp"
+#include "task.hpp"
 #include "timer.hpp"
 #include "usb/xhci/xhci.hpp"
 #include "window.hpp"
@@ -129,16 +130,6 @@ void InitializeTaskBWindow() {
   layer_manager->UpDown(task_b_window_layer_id, std::numeric_limits<int>::max());
 }
 
-struct TaskContext {
-  uint64_t cr3, rip, rflags, reserved1;
-  uint64_t cs, ss, fs, gs;
-  uint64_t rax, rbx, rcx, rdx, rdi, rsi, rsp, rbp;
-  uint64_t r8, r9, r10, r11, r12, r13, r14, r15;
-  std::array<uint8_t, 512> fxsave_area;
-} __attribute__((packed));
-
-alignas(16) TaskContext task_b_ctx, task_a_ctx;
-
 void TaskB(int task_id, int data) {
   printk("TaskB: task_id=%d, data=%d\n", task_id, data);
   char str[128];
@@ -203,7 +194,7 @@ extern "C" void KernelMainNewStack(
   memset(&task_b_ctx, 0, sizeof(task_b_ctx));
   task_b_ctx.rip = reinterpret_cast<uint64_t>(TaskB);
   task_b_ctx.rdi = 1;
-  task_b_ctx.rsi = 42;
+  task_b_ctx.rsi = 43;
 
   task_b_ctx.cr3 = GetCR3();
   task_b_ctx.rflags = 0x202;
@@ -212,6 +203,8 @@ extern "C" void KernelMainNewStack(
   task_b_ctx.rsp = (task_b_stack_end & ~0xflu) - 8;
 
   *reinterpret_cast<uint32_t*>(&task_b_ctx.fxsave_area[24]) = 0x1f80;
+
+  InitializeTask();
 
   char str[128];
 
@@ -227,8 +220,7 @@ extern "C" void KernelMainNewStack(
 
     __asm__("cli");
     if (main_queue->size() == 0) {
-      __asm__("sti");
-      SwitchContext(&task_b_ctx, &task_a_ctx);
+      __asm__("sti\n\thlt");
       continue;
     }
 
