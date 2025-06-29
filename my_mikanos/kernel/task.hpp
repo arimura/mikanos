@@ -49,7 +49,6 @@ class TaskManager {
  private:
   std::vector<std::unique_ptr<Task>> tasks_ {};
   uint64_t latest_id_ { 0 };
-  size_t currenct_task_index_ { 0 };
   std::deque<Task*> running_ {};
 };
 
