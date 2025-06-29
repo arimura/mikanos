@@ -140,8 +140,6 @@ void TaskB(int task_id, int data) {
     FillRectangle(*task_b_window->Writer(), { 24, 28 }, { 8 * 10, 16 }, { 0xc6, 0xc6, 0xc6 });
     WriteString(*task_b_window->Writer(), { 24, 28 }, str, { 0, 0, 0 });
     layer_manager->Draw(task_b_window_layer_id);
-
-    SwitchContext(&task_a_ctx, &task_b_ctx);
   }
 }
 std::deque<Message>* main_queue;
