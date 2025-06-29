@@ -1,7 +1,9 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
+#include <vector>
 
 struct TaskContext {
   uint64_t cr3, rip, rflags, reserved1;
@@ -11,7 +13,33 @@ struct TaskContext {
   std::array<uint8_t, 512> fxsave_area;
 } __attribute__((packed));
 
-extern TaskContext task_b_ctx, task_a_ctx;
+using TaskFunc = void(uint64_t, int64_t);
 
+class Task {
+ public:
+  static const size_t kDefalultStackBytes = 4096;
+
+  Task(uint64_t id);
+  TaskContext& Context();
+
+ private:
+  uint64_t id_;
+  std::vector<uint64_t> stack_;
+  alignas(16) TaskContext context_;
+};
+
+class TaskManager {
+ public:
+  TaskManager();
+  Task& NewTask();
+  void SwitchTask();
+
+ private:
+  std::vector<std::unique_ptr<Task>> tasks_ {};
+  uint64_t latest_id_ { 0 };
+  size_t currenct_task_index_ { 0 };
+};
+
+extern TaskManager* task_manager;
 void SwitchTask();
 void InitializeTask();

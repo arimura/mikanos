@@ -3,7 +3,9 @@
 #include "asmfunc.h"
 #include "timer.hpp"
 
-alignas(16) TaskContext task_b_ctx, task_a_ctx;
+Task::Task(uint64_t id)
+    : id_ { id } {
+}
 
 namespace {
   TaskContext* current_task;
