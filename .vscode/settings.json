@@ -84,7 +84,11 @@
         "shared_mutex": "cpp",
         "thread": "cpp",
         "simplefilesystem.h": "c",
-        "loadedimage.h": "c"
+        "loadedimage.h": "c",
+        "filesystem": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "io_context": "cpp"
     },
     "editor.formatOnSave": true
 }
