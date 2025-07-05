@@ -1,0 +1,132 @@
+
+classDiagram
+    %% Graphics and GUI Layer
+    class PixelColor {
+        +uint8_t r
+        +uint8_t g
+        +uint8_t b
+    }
+    
+    class Vector2D~T~ {
+        +T x
+        +T y
+        +Vector2D~T~ operator+(Vector2D~T~)
+        +Vector2D~T~ operator-(Vector2D~T~)
+    }
+    
+    class Rectangle~T~ {
+        +Vector2D~T~ pos
+        +Vector2D~T~ size
+        +T Width()
+        +T Height()
+    }
+    
+    class PixelWriter {
+        <<abstract>>
+        +Write(Vector2D~int~ pos, PixelColor& c)*
+        +Width()*
+        +Height()*
+    }
+    
+    class FrameBufferWriter {
+        +Write(Vector2D~int~ pos, PixelColor& c)
+        +Width()
+        +Height()
+    }
+    
+    class RGBResv8BitPerColorPixelWriter {
+        +Write(Vector2D~int~ pos, PixelColor& c)
+    }
+    
+    class BGRResv8BitPerColorPixelWriter {
+        +Write(Vector2D~int~ pos, PixelColor& c)
+    }
+    
+    class FrameBuffer {
+        +FrameBuffer(Vector2D~int~ size, PixelFormat format)
+        +Vector2D~int~ Size()
+        +PixelWriter& Writer()
+        +Move(Vector2D~int~ dst_pos, Rectangle~int~& src)
+        +Copy(Vector2D~int~ dst_pos, FrameBuffer& src, Rectangle~int~& src_area)
+        -Vector2D~int~ size_
+        -PixelFormat pixel_format_
+        -std::vector~uint8_t~ buffer_
+        -std::unique_ptr~PixelWriter~ writer_
+    }
+    
+    PixelWriter <|-- FrameBufferWriter
+    FrameBufferWriter <|-- RGBResv8BitPerColorPixelWriter
+    FrameBufferWriter <|-- BGRResv8BitPerColorPixelWriter
+    FrameBuffer --> PixelWriter
+    
+    %% Window System
+    class Window {
+        +Window(int width, int height, PixelFormat shadow_format)
+        +DrawTo(FrameBuffer& dst, Vector2D~int~ pos, Rectangle~int~& area)
+        +SetTransparentColor(optional~PixelColor~ c)
+        +WindowWriter* Writer()
+        +At(Vector2D~int~ pos) PixelColor&
+        +Write(Vector2D~int~ pos, PixelColor c)
+        +Width() int
+        +Height() int
+        +Size() Vector2D~int~
+        +Move(Vector2D~int~ dst_pos, Rectangle~int~& src)
+        -int width_
+        -int height_
+        -vector~vector~PixelColor~~ data_
+        -WindowWriter writer_
+        -optional~PixelColor~ transparent_color_
+        -FrameBuffer shadow_buffer_
+    }
+    
+    class WindowWriter {
+        +WindowWriter(Window& window)
+        +Write(Vector2D~int~ pos, PixelColor& c)
+        +Width() int
+        +Height() int
+        -Window& window_
+    }
+    
+    Window *-- WindowWriter
+    WindowWriter --|> PixelWriter
+    Window --> FrameBuffer
+    
+    %% Layer Management
+    class Layer {
+        +Layer(unsigned int id)
+        +unsigned int ID()
+        +SetWindow(shared_ptr~Window~& window) Layer&
+        +GetWindow() shared_ptr~Window~
+        +GetPosition() Vector2D~int~
+        +SetDraggable(bool draggable) Layer&
+        +IsDraggable() bool
+        +Move(Vector2D~int~ pos) Layer&
+        +MoveRelative(Vector2D~int~ pos_diff) Layer&
+        +DrawTo(FrameBuffer& screen, Rectangle~int~& area)
+        -unsigned int id_
+        -Vector2D~int~ pos_
+        -shared_ptr~Window~ window_
+        -bool draggable_
+    }
+    
+    class LayerManager {
+        +SetWriter(FrameBuffer* screen)
+        +NewLayer() Layer&
+        +Draw(Rectangle~int~& area)
+        +Draw(unsigned int id)
+        +Move(unsigned int id, Vector2D~int~ new_pos)
+        +MoveRelative(unsigned int id, Vector2D~int~ pos_diff)
+        +UpDown(unsigned int id, int new_height)
+        +Hide(unsigned int id)
+        +FindLayerByPosition(Vector2D~int~ pos, unsigned int exclude_id) Layer*
+        -FrameBuffer* screen_
+        -FrameBuffer back_buffer_
+        -vector~unique_ptr~Layer~~ layers_
+        -vector~Layer*~ layer_stack_
+        -unsigned int latest_id_
+        -FindLayer(unsigned int id) Layer*
+    }
+    
+    LayerManager --> FrameBuffer
+    LayerManager --> Layer
+    Layer --> Window
