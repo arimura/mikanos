@@ -67,7 +67,7 @@ void Task::SendMessage(const Message& msg) {
   Wakeup();
 }
 
-std::optional<Message> Task::ReceiceMessage() {
+std::optional<Message> Task::ReceiveMessage() {
   if (msgs_.empty()) {
     return std::nullopt;
   }

@@ -151,7 +151,7 @@ void TaskB(uint64_t task_id, int64_t data) {
 
     while (true) {
       __asm__("cli");
-      auto msg = task.ReceiceMessage();
+      auto msg = task.ReceiveMessage();
       if (!msg) {
         task.Sleep();
         __asm__("sti");
@@ -233,7 +233,7 @@ extern "C" void KernelMainNewStack(
     layer_manager->Draw(main_window_layer_id);
 
     __asm__("cli");
-    auto msg = main_task.ReceiceMessage();
+    auto msg = main_task.ReceiveMessage();
     if (!msg) {
       main_task.Sleep();
       __asm__("sti");

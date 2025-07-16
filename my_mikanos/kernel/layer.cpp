@@ -186,7 +186,7 @@ LayerManager* layer_manager;
 ActiveLayer::ActiveLayer(LayerManager& manager)
     : manager_ { manager } { }
 
-void ActiveLayer::SetMouserLayer(unsigned int mouse_layer) {
+void ActiveLayer::SetMouseLayer(unsigned int mouse_layer) {
   mouse_layer_ = mouse_layer;
 }
 

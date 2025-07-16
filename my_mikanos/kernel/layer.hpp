@@ -59,7 +59,7 @@ extern LayerManager* layer_manager;
 class ActiveLayer {
  public:
   ActiveLayer(LayerManager& manger);
-  void SetMouserLayer(unsigned int mouse_layer);
+  void SetMouseLayer(unsigned int mouse_layer);
   void Activate(unsigned int layer_id);
   unsigned int GetActive() const { return activate_layer_; }
 

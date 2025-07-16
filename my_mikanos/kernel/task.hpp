@@ -34,7 +34,7 @@ class Task {
   Task& Sleep();
   Task& Wakeup();
   void SendMessage(const Message& msg);
-  std::optional<Message> ReceiceMessage();
+  std::optional<Message> ReceiveMessage();
 
   int Level() const { return level_; };
   bool Running() const { return running_; };
