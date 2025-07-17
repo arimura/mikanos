@@ -40,4 +40,5 @@ update-taget:
 clean:
 	rm -f $(KERNEL_DIR)/$(KERNEL)
 	find $(KERNEL_DIR) -type f -name '*.o' -delete
+	find $(KERNEL_DIR) -type f -name '*.d' -delete
 	rm -f disk.img
