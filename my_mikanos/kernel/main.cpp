@@ -195,7 +195,6 @@ extern "C" void KernelMainNewStack(
   InitializeLayer();
   InitializeMainWindow();
   InitializeTextWindow();
-  InitializeTaskBWindow();
   layer_manager->Draw({ { 0, 0 }, ScreenSize() });
   active_layer->Activate(task_b_window_layer_id);
 
@@ -219,6 +218,8 @@ extern "C" void KernelMainNewStack(
   usb::xhci::Initialize();
   InitializeKeyboard();
   InitializeMouse();
+
+  InitializeTaskBWindow();
 
   char str[128];
 
