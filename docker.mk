@@ -8,7 +8,6 @@ MY_PKG:=/workspaces/mikanos/my_mikanos/MikanLoaderPkg
 
 all: clean $(KERNEL_DIR)/$(KERNEL) build run-qemu
 
-
 $(KERNEL_DIR)/$(KERNEL):
 	$(MAKE) -C $(KERNEL_DIR) $(KERNEL) 
 
