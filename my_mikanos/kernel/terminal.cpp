@@ -174,15 +174,15 @@ Rectangle<int> Terminal::HistoryUpDown(int direction) {
   Rectangle<int> draw_area { first_pos, { 8 * (kColumns - 1), 16 } };
   FillRectangle(*window_->Writer(), draw_area.pos, draw_area.size, { 0, 0, 0 });
 
-  const char* historuy = "";
+  const char* history = "";
   if (cmd_history_index_ >= 0) {
-    historuy = &cmd_history_[cmd_history_index_][0];
+    history = &cmd_history_[cmd_history_index_][0];
   }
 
-  strcpy(&linebuf_[0], historuy);
-  linebuf_index_ = strlen(historuy);
+  strcpy(&linebuf_[0], history);
+  linebuf_index_ = strlen(history);
 
-  WriteString(*window_->Writer(), first_pos, historuy, { 255, 255, 255 });
+  WriteString(*window_->Writer(), first_pos, history, { 255, 255, 255 });
   cursor_.x = linebuf_index_ + 1;
   return draw_area;
 }
