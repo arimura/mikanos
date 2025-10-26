@@ -89,7 +89,8 @@
         "forward_list": "cpp",
         "list": "cpp",
         "io_context": "cpp",
-        "executor": "cpp"
+        "executor": "cpp",
+        "printlib.h": "c"
     },
     "editor.formatOnSave": true
 }
