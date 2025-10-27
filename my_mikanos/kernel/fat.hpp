@@ -71,4 +71,12 @@ namespace fat {
     return reinterpret_cast<T*>(GetClusterAddr(cluster));
   }
   void ReadName(const DirectoryEntry& entry, char* base, char* ext);
+
+  static const unsigned long kEndOfClusterChain = 0x0ffffffflu;
+
+  unsigned long NextCluster(unsigned long cluster);
+
+  DirectoryEntry* FindFile(const char* name, unsigned long directory_cluster = 0);
+
+  bool NameIsEqual(const DirectoryEntry& entry, const char* name);
 }
