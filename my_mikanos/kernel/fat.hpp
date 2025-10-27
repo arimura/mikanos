@@ -64,6 +64,7 @@ namespace fat {
   } __attribute__((packed));
 
   extern BPB* boot_volume_image;
+  extern unsigned long bytes_per_cluster;
   void Initialize(void* volume_image);
   uintptr_t GetClusterAddr(unsigned long clutter);
   template <class T>
