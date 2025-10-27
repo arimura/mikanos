@@ -73,7 +73,7 @@ namespace fat {
   }
   void ReadName(const DirectoryEntry& entry, char* base, char* ext);
 
-  static const unsigned long kEndOfClusterChain = 0x0ffffffflu;
+  static const unsigned long kEndOfClusterchain = 0x0ffffffflu;
 
   unsigned long NextCluster(unsigned long cluster);
 
