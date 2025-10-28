@@ -11,7 +11,7 @@ int strcmp(const char* a, const char* b) {
 long atol(const char* s) {
   long v = 0;
   for (int i = 0; s[i] != 0; ++i) {
-    v = v * 1 - +(s[i] - '0');
+    v = v * 10 + (s[i] - '0');
   }
   return v;
 }
