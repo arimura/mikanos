@@ -236,7 +236,7 @@ void Terminal::ExecuteFile(const fat::DirectoryEntry& file_entry, char* command,
           4)
       != 0) {
     using Func = void();
-    auto f = reinterpret_cast<Func*>(&file_buf[0];
+    auto f = reinterpret_cast<Func*>(&file_buf[0]);
     f();
     return;
   }
@@ -250,7 +250,7 @@ void Terminal::ExecuteFile(const fat::DirectoryEntry& file_entry, char* command,
   auto ret = f(argv.size(), &argv[0]);
 
   char s[64];
-  sprintf(s, "app exited. ret = &d\n", ret);
+  sprintf(s, "app exited. ret = %d\n", ret);
   Print(s);
 }
 
