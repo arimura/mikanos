@@ -2,24 +2,19 @@
 HOME:=/home/vscode
 SHELL:=/bin/bash
 KERNEL:=kernel.elf
-KERNEL_DIR:=my_mikanos/kernel
+MY_WORKSPACE:=my_mikanos
+KERNEL_DIR:=$(MY_WORKSPACE)/kernel
+APP_DIR:=$(MY_WORKSPACE)/apps
 PKG_LINK:=/home/vscode/edk2/MikanLoaderPkg
 MY_PKG:=/workspaces/mikanos/my_mikanos/MikanLoaderPkg
 
-all: clean $(KERNEL_DIR)/$(KERNEL) build run-qemu
-
-$(KERNEL_DIR)/$(KERNEL):
-	$(MAKE) -C $(KERNEL_DIR) $(KERNEL) 
+all: clean build run
 
 build:
 	cd $(HOME)/edk2 && build 
 
-EFI=$(HOME)/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
-run-qemu: $(KERNEL_DIR)/$(KERNEL)
-ifeq ($(EFI),)
-	$(error "EFI is not set")
-endif
-	/home/vscode/osbook/devenv/run_qemu.sh $(EFI) $(KERNEL_DIR)/$(KERNEL)
+run:
+	cd $(MY_WORKSPACE) && ./build.sh run
 
 # P51の設定も行う
 init: update-tools_def update-taget
@@ -40,4 +35,6 @@ clean:
 	rm -f $(KERNEL_DIR)/$(KERNEL)
 	find $(KERNEL_DIR) -type f -name '*.o' -delete
 	find $(KERNEL_DIR) -type f -name '*.d' -delete
+	find $(KERNEL_DIR) -type f -name '*.d' -delete
+	rm -f $(APP_DIR)/onlyhlt/onlyhlt
 	rm -f disk.img
