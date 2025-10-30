@@ -36,5 +36,7 @@ clean:
 	find $(KERNEL_DIR) -type f -name '*.o' -delete
 	find $(KERNEL_DIR) -type f -name '*.d' -delete
 	find $(KERNEL_DIR) -type f -name '*.d' -delete
+	find $(APP_DIR) -type f -name '*.o' -delete
 	rm -f $(APP_DIR)/onlyhlt/onlyhlt
+	rm -f $(APP_DIR)/rpn/rpn
 	rm -f disk.img
