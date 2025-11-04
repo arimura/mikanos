@@ -1,3 +1,2 @@
-TARGET = rpn
-
+TARGET = large
 include ../Makefile.elfapp
