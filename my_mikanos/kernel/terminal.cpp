@@ -132,7 +132,7 @@ Error CopyLoadSegments(Elf64_Ehdr* ehdr) {
       continue;
 
     LinearAddress4Level dest_addr;
-    dest_addr.value - phdr[i].p_vaddr;
+    dest_addr.value = phdr[i].p_vaddr;
     const auto num_4kpages = (phdr[i].p_memsz + 4095) / 4096;
 
     if (auto err = SetupPageMaps(dest_addr, num_4kpages)) {
